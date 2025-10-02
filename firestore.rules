@@ -1,0 +1,165 @@
+/**
+ * @file Firestore Security Rules
+ * @description This ruleset enforces a strict user-ownership model for all data.
+ *
+ * Data Structure:
+ * All data is nested under /users/{userId}, ensuring that each user has their own private data tree.
+ * - /users/{userId}/subjects/{subjectId}
+ * - /users/{userId}/subjects/{subjectId}/papers/{paperId}
+ * - /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}
+ * - /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}/activities/{activityId}
+ * - /users/{userId}/exams/{examId}
+ *
+ * Key Security Decisions:
+ * - All data is private and accessible only to the owning user.
+ * - Users can only create, read, update, and delete data within their own user ID space.
+ * - No listing of users or global data is allowed.
+ *
+ * Authorization Notes:
+ * To create simpler, more performant rules, data required for an authorization decision should be denormalized directly onto the documents being secured. This avoids slow, costly `get()` calls.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the request is made by a signed-in user.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the authenticated user ID matches the provided user ID.
+     * @param {string} userId The user ID to compare against the authenticated user's ID.
+     * @return {bool} True if the user IDs match, false otherwise.
+     * @example isOwner("user123") returns true if request.auth.uid is "user123".
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the authenticated user is the owner of an existing document.
+     * @param {string} userId The user ID of the document's owner.
+     * @return {bool} True if the user is the owner and the resource exists, false otherwise.
+     * @example isExistingOwner("user123") returns true if the user "user123" is the owner of the document and the document exists.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description
+     * Secures the Subject documents, ensuring that only the owner can manage their subjects.
+     * @path /users/{userId}/subjects/{subjectId}
+     * @allow (create) User 'user123' can create a subject under their own user ID.
+     *    request.auth.uid: 'user123'
+     *    request.resource.data: { id: 'user123' }
+     * @allow (get, list) User 'user123' can read their own subject.
+     *    request.auth.uid: 'user123'
+     * @deny (create) User 'user456' cannot create a subject under 'user123's user ID.
+     *    request.auth.uid: 'user456'
+     *    request.resource.data: { id: 'user123' }
+     * @deny (update, delete) User 'user456' cannot update or delete 'user123's subject.
+     *    request.auth.uid: 'user456'
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
+     */
+    match /users/{userId}/subjects/{subjectId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == subjectId;
+      allow update: if isExistingOwner(userId) && resource.data.id == subjectId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Secures the Paper documents, ensuring that only the owner can manage their papers.
+     * @path /users/{userId}/subjects/{subjectId}/papers/{paperId}
+     * @allow (create) User 'user123' can create a paper under their own user ID and a subject they own.
+     *    request.auth.uid: 'user123'
+     * @allow (get, list) User 'user123' can read their own paper.
+     *    request.auth.uid: 'user123'
+     * @deny (create) User 'user456' cannot create a paper under 'user123's user ID.
+     *    request.auth.uid: 'user456'
+     * @deny (update, delete) User 'user456' cannot update or delete 'user123's paper.
+     *    request.auth.uid: 'user456'
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
+     */
+    match /users/{userId}/subjects/{subjectId}/papers/{paperId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == paperId;
+      allow update: if isExistingOwner(userId) && resource.data.id == paperId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Secures the Chapter documents, ensuring that only the owner can manage their chapters.
+     * @path /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}
+     * @allow (create) User 'user123' can create a chapter under their own user ID, a subject they own, and a paper they own.
+     *    request.auth.uid: 'user123'
+     * @allow (get, list) User 'user123' can read their own chapter.
+     *    request.auth.uid: 'user123'
+     * @deny (create) User 'user456' cannot create a chapter under 'user123's user ID.
+     *    request.auth.uid: 'user456'
+     * @deny (update, delete) User 'user456' cannot update or delete 'user123's chapter.
+     *    request.auth.uid: 'user456'
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
+     */
+    match /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == chapterId;
+      allow update: if isExistingOwner(userId) && resource.data.id == chapterId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Secures the Activity documents, ensuring that only the owner can manage their activities.
+     * @path /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}/activities/{activityId}
+     * @allow (create) User 'user123' can create an activity under their own user ID, a subject they own, a paper they own, and a chapter they own.
+     *    request.auth.uid: 'user123'
+     * @allow (get, list) User 'user123' can read their own activity.
+     *    request.auth.uid: 'user123'
+     * @deny (create) User 'user456' cannot create an activity under 'user123's user ID.
+     *    request.auth.uid: 'user456'
+     * @deny (update, delete) User 'user456' cannot update or delete 'user123's activity.
+     *    request.auth.uid: 'user456'
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
+     */
+    match /users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}/activities/{activityId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == activityId;
+      allow update: if isExistingOwner(userId) && resource.data.id == activityId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description
+     * Secures the Exam documents, ensuring that only the owner can manage their exams.
+     * @path /users/{userId}/exams/{examId}
+     * @allow (create) User 'user123' can create an exam under their own user ID.
+     *    request.auth.uid: 'user123'
+     * @allow (get, list) User 'user123' can read their own exam.
+     *    request.auth.uid: 'user123'
+     * @deny (create) User 'user456' cannot create an exam under 'user123's user ID.
+     *    request.auth.uid: 'user456'
+     * @deny (update, delete) User 'user456' cannot update or delete 'user123's exam.
+     *    request.auth.uid: 'user456'
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
+     */
+    match /users/{userId}/exams/{examId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == examId;
+      allow update: if isExistingOwner(userId) && resource.data.id == examId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
