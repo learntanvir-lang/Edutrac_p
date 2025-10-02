@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader } from "lucide-react";
 
 export default function LoginPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,11 +34,16 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleAuthAction = async (action: () => Promise<any>) => {
+  const handleAuthAction = async (action: "signin" | "signup") => {
     setLoading(true);
     setError(null);
     try {
-      await action();
+      if (action === "signup") {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
       router.push("/");
     } catch (err: any) {
       setError(err.message);
@@ -49,12 +56,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
-  const handleSignUp = () =>
-    handleAuthAction(() => createUserWithEmailAndPassword(auth, email, password));
-
-  const handleSignIn = () =>
-    handleAuthAction(() => signInWithEmailAndPassword(auth, email, password));
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -95,7 +96,7 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col items-stretch gap-4">
-              <Button onClick={handleSignIn} disabled={loading} className="w-full">
+              <Button onClick={() => handleAuthAction("signin")} disabled={loading} className="w-full">
                 {loading ? <Loader className="animate-spin" /> : "Sign In"}
               </Button>
             </CardFooter>
@@ -110,6 +111,17 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name-signup">Name</Label>
+                <Input
+                  id="name-signup"
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email-signup">Email</Label>
                 <Input
@@ -133,7 +145,7 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col items-stretch">
-              <Button onClick={handleSignUp} disabled={loading} className="w-full">
+              <Button onClick={() => handleAuthAction("signup")} disabled={loading} className="w-full">
                 {loading ? <Loader className="animate-spin" /> : "Sign Up"}
               </Button>
             </CardFooter>

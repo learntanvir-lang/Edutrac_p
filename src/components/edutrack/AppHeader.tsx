@@ -27,7 +27,7 @@ export function AppHeader() {
         {user && (
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground hidden sm:inline">
-              {user.email}
+              {user.displayName || user.email}
             </span>
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               Sign Out
