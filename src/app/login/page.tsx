@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInAnonymously,
 } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,9 +56,6 @@ export default function LoginPage() {
   const handleSignIn = () =>
     handleAuthAction(() => signInWithEmailAndPassword(auth, email, password));
 
-  const handleAnonymousSignIn = () =>
-    handleAuthAction(() => signInAnonymously(auth));
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Tabs defaultValue="signin" className="w-full max-w-md">
@@ -101,19 +97,6 @@ export default function LoginPage() {
             <CardFooter className="flex-col items-stretch gap-4">
               <Button onClick={handleSignIn} disabled={loading} className="w-full">
                 {loading ? <Loader className="animate-spin" /> : "Sign In"}
-              </Button>
-               <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                    </span>
-                </div>
-              </div>
-              <Button onClick={handleAnonymousSignIn} variant="outline" disabled={loading} className="w-full">
-                {loading ? <Loader className="animate-spin" /> : "Sign in Anonymously"}
               </Button>
             </CardFooter>
           </Card>
