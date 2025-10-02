@@ -26,9 +26,13 @@ export function AppHeader() {
         </Link>
         {user && (
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
-              {user.displayName || user.email}
-            </span>
+            {user.displayName ? (
+              <span className="text-sm text-muted-foreground hidden sm:inline">
+                Hello, <span className="font-bold text-primary">{user.displayName}</span>
+              </span>
+            ) : (
+               user.email && <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
+            )}
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               Sign Out
             </Button>
