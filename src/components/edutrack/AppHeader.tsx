@@ -6,7 +6,15 @@ import { EduTrackLogo } from './EduTrackLogo';
 import { useAuth, useUser } from '@/firebase/provider';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, CircleUser, LogOut } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function AppHeader() {
   const { user } = useUser();
@@ -27,17 +35,32 @@ export function AppHeader() {
         </Link>
         {user && (
           <div className="flex items-center gap-4">
-            {user.displayName ? (
-              <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                Hello, {user.displayName}
-              </span>
-            ) : (
-               user.email && <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
-            )}
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              Sign Out
-            </Button>
+            <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              Hello, {user.displayName || 'User'}
+            </span>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" size="icon" className="rounded-full">
+                  <CircleUser className="h-5 w-5" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex flex-col items-start" disabled>
+                  <span>Logged in as</span>
+                  <span className="font-medium text-foreground">{user.email}</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </div>
