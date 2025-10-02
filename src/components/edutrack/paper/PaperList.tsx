@@ -2,21 +2,24 @@
 "use client";
 
 import { useState, useContext } from "react";
+import dynamic from 'next/dynamic';
 import { Paper } from "@/lib/types";
 import { AppDataContext } from "@/context/AppDataContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pen, Trash2, ChevronDown, PlusCircle } from "lucide-react";
+import { MoreHorizontal, Pen, Trash2, ChevronDown, PlusCircle, Loader } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PaperDialog } from "./PaperDialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ChapterList } from "../chapter/ChapterList";
-import { ChapterDialog } from "../chapter/ChapterDialog";
+
+const PaperDialog = dynamic(() => import('@/components/edutrack/paper/PaperDialog').then(mod => mod.PaperDialog), { ssr: false });
+const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
+
 
 interface PaperListProps {
   papers: Paper[];
@@ -109,7 +112,7 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
           paper={editingPaper}
         />
       )}
-       {activePaperId && (
+       {activePaperId && isChapterDialogOpen && (
         <ChapterDialog
             open={isChapterDialogOpen}
             onOpenChange={onChapterDialogChange}

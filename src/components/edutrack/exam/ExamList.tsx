@@ -1,12 +1,17 @@
 "use client";
 
 import { useContext, useState, useMemo } from "react";
+import dynamic from 'next/dynamic';
 import { AppDataContext } from "@/context/AppDataContext";
 import { ExamItem } from "./ExamItem";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
-import { ExamDialog } from "./ExamDialog";
+import { PlusCircle, Loader } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+
+const ExamDialog = dynamic(() => import('@/components/edutrack/exam/ExamDialog').then(mod => mod.ExamDialog), {
+  loading: () => <div className="p-4"><Loader className="animate-spin" /></div>,
+  ssr: false
+});
 
 export function ExamList() {
   const { exams } = useContext(AppDataContext);
@@ -70,7 +75,7 @@ export function ExamList() {
         </>
       )}
 
-      <ExamDialog open={isExamDialogOpen} onOpenChange={setIsExamDialogOpen} />
+      {isExamDialogOpen && <ExamDialog open={isExamDialogOpen} onOpenChange={setIsExamDialogOpen} />}
     </div>
   );
 }

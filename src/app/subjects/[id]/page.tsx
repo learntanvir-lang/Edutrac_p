@@ -2,13 +2,15 @@
 
 import { useContext, useState } from "react";
 import { useParams, notFound, useRouter } from "next/navigation";
+import dynamic from 'next/dynamic';
 import { AppDataContext } from "@/context/AppDataContext";
 import { Breadcrumbs } from "@/components/edutrack/Breadcrumbs";
 import { PaperList } from "@/components/edutrack/paper/PaperList";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { PaperDialog } from "@/components/edutrack/paper/PaperDialog";
-import { Subject } from "@/lib/types";
+import type { Subject } from "@/lib/types";
+
+const PaperDialog = dynamic(() => import('@/components/edutrack/paper/PaperDialog').then(mod => mod.PaperDialog), { ssr: false });
 
 export default function SubjectPage() {
   const { id } = useParams();
@@ -50,11 +52,13 @@ export default function SubjectPage() {
       
       <PaperList subjectId={subject.id} papers={subject.papers} />
 
-      <PaperDialog 
-        open={isPaperDialogOpen}
-        onOpenChange={setIsPaperDialogOpen}
-        subjectId={subject.id}
-      />
+      {isPaperDialogOpen && (
+        <PaperDialog 
+          open={isPaperDialogOpen}
+          onOpenChange={setIsPaperDialogOpen}
+          subjectId={subject.id}
+        />
+      )}
     </div>
   );
 }

@@ -2,11 +2,11 @@
 
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import { Chapter } from "@/lib/types";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pen, Trash2, ChevronDown, Copy, GripVertical, Link as LinkIcon, Edit, ExternalLink, Activity, Bookmark } from "lucide-react";
+import { MoreHorizontal, Pen, Trash2, ChevronDown, Copy, GripVertical, Link as LinkIcon, Edit, ExternalLink, Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ interface ChapterAccordionItemProps {
     paperId: string;
 }
 
-export function ChapterAccordionItem({ chapter, subjectId, paperId }: ChapterAccordionItemProps) {
+function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterAccordionItemProps) {
     const { dispatch } = useContext(AppDataContext);
     const [isEditingChapter, setIsEditingChapter] = useState(false);
 
@@ -54,7 +54,6 @@ export function ChapterAccordionItem({ chapter, subjectId, paperId }: ChapterAcc
                             <div className="flex items-center gap-3">
                                 <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
                                 <span className="font-bold text-lg text-primary">
-                                    {chapter.number && `Chapter ${chapter.number}: `}
                                     {chapter.name}
                                 </span>
                                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
@@ -149,3 +148,5 @@ export function ChapterAccordionItem({ chapter, subjectId, paperId }: ChapterAcc
         </>
     );
 }
+
+export const ChapterAccordionItem = memo(ChapterAccordionItemComponent);

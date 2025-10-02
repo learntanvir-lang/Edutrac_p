@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, useEffect, ReactNode, useReducer, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 import { Subject, Exam, Paper, Chapter } from "@/lib/types";
 import { v4 as uuidv4 } from 'uuid';
 import { useUser, useFirestore } from "@/firebase";
@@ -55,8 +55,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const subjectsRef = useMemoFirebase(() => user ? collection(firestore, 'users', user.uid, 'subjects') : null, [user, firestore]);
   const examsRef = useMemoFirebase(() => user ? collection(firestore, 'users', user.uid, 'exams') : null, [user, firestore]);
 
-  const { data: subjects, isLoading: subjectsLoading } = useCollection<Subject>(subjectsRef);
-  const { data: exams, isLoading: examsLoading } = useCollection<Exam>(examsRef);
+  const { data: subjectsData, isLoading: subjectsLoading } = useCollection<Subject>(subjectsRef);
+  const { data: examsData, isLoading: examsLoading } = useCollection<Exam>(examsRef);
 
   const appDispatch = (action: Action) => {
     if (!user) return;
@@ -172,8 +172,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const state: AppState = {
-    subjects: subjects || [],
-    exams: exams || [],
+    subjects: subjectsData || [],
+    exams: examsData || [],
     isLoading: subjectsLoading || examsLoading,
   }
 
@@ -201,5 +201,3 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
   // Only render the DataProvider if there is a logged-in user
   return <DataProvider>{children}</DataProvider>;
 }
-
-    

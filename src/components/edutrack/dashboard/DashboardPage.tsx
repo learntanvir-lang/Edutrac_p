@@ -1,16 +1,21 @@
 "use client";
 
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, lazy } from 'react';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { AppDataContext } from '@/context/AppDataContext';
 import NextExamCard from '@/components/edutrack/exam/NextExamCard';
 import { ExamList } from '@/components/edutrack/exam/ExamList';
 import { SubjectList } from '@/components/edutrack/subject/SubjectList';
-import { PlusCircle, BookOpen, Target } from 'lucide-react';
-import { SubjectDialog } from '@/components/edutrack/subject/SubjectDialog';
+import { PlusCircle, BookOpen, Target, Loader } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { Paper, Subject } from '@/lib/types';
+import type { Paper, Subject } from '@/lib/types';
+
+const SubjectDialog = dynamic(() => import('@/components/edutrack/subject/SubjectDialog').then(mod => mod.SubjectDialog), {
+  loading: () => <div className="p-4"><Loader className="animate-spin" /></div>,
+  ssr: false
+});
 
 type View = 'subjects' | 'exams' | null;
 
@@ -91,7 +96,7 @@ export default function DashboardPage() {
           {activeView === 'exams' && <ExamList />}
         </div>
       
-      <SubjectDialog open={isSubjectDialogOpen} onOpenChange={setIsSubjectDialogOpen} />
+      {isSubjectDialogOpen && <SubjectDialog open={isSubjectDialogOpen} onOpenChange={setIsSubjectDialogOpen} />}
     </div>
   );
 }

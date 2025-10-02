@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import { Exam } from "@/lib/types";
 import { AppDataContext } from "@/context/AppDataContext";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -17,7 +17,7 @@ interface ExamItemProps {
   exam: Exam;
 }
 
-export function ExamItem({ exam }: ExamItemProps) {
+function ExamItemComponent({ exam }: ExamItemProps) {
   const { subjects, dispatch } = useContext(AppDataContext);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -59,7 +59,7 @@ export function ExamItem({ exam }: ExamItemProps) {
   return (
     <>
       <Card className={cn(
-          "shadow-sm hover:shadow-md transition-shadow",
+          "shadow-sm hover:shadow-md transition-shadow flex flex-col",
           exam.isCompleted ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
       )}>
         <CardHeader className="pb-4">
@@ -77,7 +77,7 @@ export function ExamItem({ exam }: ExamItemProps) {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4 px-6 pb-4">
+        <CardContent className="space-y-4 px-6 pb-4 flex-grow">
           <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex flex-wrap gap-1">
               {examDetails.map((detail, index) => detail && (
@@ -92,7 +92,7 @@ export function ExamItem({ exam }: ExamItemProps) {
           </div>
           <Countdown targetDate={exam.date} isPastOrCompleted={isPast || exam.isCompleted} />
         </CardContent>
-        <CardFooter className="flex justify-between gap-2">
+        <CardFooter className="flex flex-col sm:flex-row justify-between gap-2">
            <div className="flex w-full items-center space-x-2">
                 <Button
                     onClick={() => handleStatusChange(false)}
@@ -119,3 +119,5 @@ export function ExamItem({ exam }: ExamItemProps) {
     </>
   );
 }
+
+export const ExamItem = memo(ExamItemComponent);

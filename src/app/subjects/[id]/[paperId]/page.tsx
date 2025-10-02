@@ -2,13 +2,15 @@
 
 import { useContext, useState } from "react";
 import { useParams, notFound } from "next/navigation";
+import dynamic from 'next/dynamic';
 import { AppDataContext } from "@/context/AppDataContext";
 import { Breadcrumbs } from "@/components/edutrack/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { ChapterList } from "@/components/edutrack/chapter/ChapterList";
-import { ChapterDialog } from "@/components/edutrack/chapter/ChapterDialog";
 import type { Subject, Paper } from "@/lib/types";
+
+const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
 
 export default function PaperPage() {
   const { id, paperId: pId } = useParams();
@@ -45,12 +47,14 @@ export default function PaperPage() {
 
       <ChapterList subjectId={subject.id} paperId={paper.id} chapters={paper.chapters} />
 
-      <ChapterDialog
-        open={isChapterDialogOpen}
-        onOpenChange={setIsChapterDialogOpen}
-        subjectId={subject.id}
-        paperId={paper.id}
-      />
+      {isChapterDialogOpen && (
+        <ChapterDialog
+          open={isChapterDialogOpen}
+          onOpenChange={setIsChapterDialogOpen}
+          subjectId={subject.id}
+          paperId={paper.id}
+        />
+      )}
     </div>
   );
 }

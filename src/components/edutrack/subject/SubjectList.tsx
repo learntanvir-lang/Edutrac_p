@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useContext } from 'react';
+import dynamic from 'next/dynamic';
 import { Subject } from '@/lib/types';
 import { AppDataContext } from '@/context/AppDataContext';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SubjectDialog } from './SubjectDialog';
 import {
   Accordion,
   AccordionContent,
@@ -21,7 +21,10 @@ import {
 } from '@/components/ui/accordion';
 import { PaperList } from '../paper/PaperList';
 import { Card, CardTitle } from '@/components/ui/card';
-import { PaperDialog } from '../paper/PaperDialog';
+
+const SubjectDialog = dynamic(() => import('./SubjectDialog').then(mod => mod.SubjectDialog), { ssr: false });
+const PaperDialog = dynamic(() => import('../paper/PaperDialog').then(mod => mod.PaperDialog), { ssr: false });
+
 
 export function SubjectList() {
   const { subjects, dispatch } = useContext(AppDataContext);
@@ -113,7 +116,7 @@ export function SubjectList() {
           subject={editingSubject}
         />
       )}
-      {activeSubjectId && (
+      {activeSubjectId && isPaperDialogOpen && (
         <PaperDialog
             open={isPaperDialogOpen}
             onOpenChange={onPaperDialogChange}
