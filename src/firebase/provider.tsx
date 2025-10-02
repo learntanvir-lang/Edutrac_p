@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore } from 'firebase/firestore';
+import { Firestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 
@@ -67,6 +68,26 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     userError: null,
   });
 
+  const [isPersistenceEnabled, setIsPersistenceEnabled] = useState(false);
+
+  useEffect(() => {
+    enableIndexedDbPersistence(firestore)
+      .then(() => {
+        setIsPersistenceEnabled(true);
+      })
+      .catch((err) => {
+        if (err.code == 'failed-precondition') {
+          console.warn('Firestore persistence failed: multiple tabs open.');
+        } else if (err.code == 'unimplemented') {
+          console.warn('Firestore persistence not available in this browser.');
+        }
+        // In any case, we can proceed with the app.
+        // Offline capability will just be disabled.
+        setIsPersistenceEnabled(true);
+      });
+  }, [firestore]);
+
+
   // Effect to subscribe to Firebase auth state changes
   useEffect(() => {
     if (!auth) { // If no Auth service instance, cannot determine user state
@@ -91,22 +112,22 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
   // Memoize the context value
   const contextValue = useMemo((): FirebaseContextState => {
-    const servicesAvailable = !!(firebaseApp && firestore && auth);
+    const servicesAvailable = !!(firebaseApp && firestore && auth && isPersistenceEnabled);
     return {
       areServicesAvailable: servicesAvailable,
       firebaseApp: servicesAvailable ? firebaseApp : null,
       firestore: servicesAvailable ? firestore : null,
       auth: servicesAvailable ? auth : null,
       user: userAuthState.user,
-      isUserLoading: userAuthState.isUserLoading,
+      isUserLoading: userAuthState.isUserLoading || !isPersistenceEnabled,
       userError: userAuthState.userError,
     };
-  }, [firebaseApp, firestore, auth, userAuthState]);
+  }, [firebaseApp, firestore, auth, userAuthState, isPersistenceEnabled]);
 
   return (
     <FirebaseContext.Provider value={contextValue}>
       <FirebaseErrorListener />
-      {children}
+      {contextValue.areServicesAvailable ? children : null /* Or a global loader */}
     </FirebaseContext.Provider>
   );
 };
