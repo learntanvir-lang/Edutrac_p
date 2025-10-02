@@ -6,6 +6,7 @@ import { EduTrackLogo } from './EduTrackLogo';
 import { useAuth, useUser } from '@/firebase/provider';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { Sparkles } from 'lucide-react';
 
 export function AppHeader() {
   const { user } = useUser();
@@ -27,7 +28,8 @@ export function AppHeader() {
         {user && (
           <div className="flex items-center gap-4">
             {user.displayName ? (
-              <span className="text-lg font-bold text-primary hidden sm:inline">
+              <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
                 Hello, {user.displayName}
               </span>
             ) : (
