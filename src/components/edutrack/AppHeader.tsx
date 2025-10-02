@@ -27,8 +27,8 @@ export function AppHeader() {
         {user && (
           <div className="flex items-center gap-4">
             {user.displayName ? (
-              <span className="text-sm text-muted-foreground hidden sm:inline">
-                Hello, <span className="font-bold text-primary">{user.displayName}</span>
+              <span className="text-lg font-bold text-primary hidden sm:inline">
+                Hello, {user.displayName}
               </span>
             ) : (
                user.email && <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
