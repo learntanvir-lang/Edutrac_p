@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { AppHeader } from '@/components/edutrack/AppHeader';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'EduTrack - Student Exam & Syllabus Tracker',
@@ -26,13 +27,15 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
-        <AppDataProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <AppHeader />
-            <main className="flex-1">{children}</main>
-          </div>
-          <Toaster />
-        </AppDataProvider>
+        <FirebaseClientProvider>
+          <AppDataProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <AppHeader />
+              <main className="flex-1">{children}</main>
+            </div>
+            <Toaster />
+          </AppDataProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );
