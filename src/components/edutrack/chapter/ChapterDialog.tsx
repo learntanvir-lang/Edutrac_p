@@ -62,34 +62,32 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
 
   const form = useForm<ChapterFormValues>({
     resolver: zodResolver(chapterSchema),
-    defaultValues: {
+    defaultValues: isEditing ? chapter : {
       name: "",
       number: "",
-      progressItems: [],
+      progressItems: [
+          { id: uuidv4(), name: 'Class Sessions', completed: 0, total: 0 },
+          { id: uuidv4(), name: 'Practice Problems', completed: 0, total: 0 },
+      ],
       resourceLinks: [],
     },
   });
 
   useEffect(() => {
-    if (chapter && open) {
-      form.reset({
-        name: chapter.name,
-        number: chapter.number,
-        progressItems: chapter.progressItems,
-        resourceLinks: chapter.resourceLinks,
-      });
-    } else if (!isEditing && open) {
-      form.reset({
+    // When the dialog opens, reset the form to the correct initial state.
+    if (open) {
+      const defaultValues = isEditing ? chapter : {
         name: "",
         number: "",
         progressItems: [
-            { id: uuidv4(), name: 'Class Sessions', completed: 0, total: 0 },
-            { id: uuidv4(), name: 'Practice Problems', completed: 0, total: 0 },
+          { id: uuidv4(), name: 'Class Sessions', completed: 0, total: 0 },
+          { id: uuidv4(), name: 'Practice Problems', completed: 0, total: 0 },
         ],
         resourceLinks: [],
-      });
+      };
+      form.reset(defaultValues);
     }
-  }, [chapter, open, form, isEditing]);
+  }, [open, chapter, isEditing, form]);
 
 
   const { fields: progressFields, append: appendProgress, remove: removeProgress, move: moveProgress } = useFieldArray({
@@ -146,20 +144,8 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
     onOpenChange(false);
   };
   
-  const handleOpenChange = (isOpen: boolean) => {
-      if (!isOpen) {
-        form.reset({
-            name: "",
-            number: "",
-            progressItems: [],
-            resourceLinks: [],
-        });
-      }
-      onOpenChange(isOpen);
-  }
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Chapter" : "Add New Chapter"}</DialogTitle>
