@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Subject } from '@/lib/types';
 import { AppDataContext } from '@/context/AppDataContext';
@@ -21,10 +21,29 @@ import {
 } from '@/components/ui/accordion';
 import { PaperList } from '../paper/PaperList';
 import { Card, CardTitle } from '@/components/ui/card';
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const SubjectDialog = dynamic(() => import('./SubjectDialog').then(mod => mod.SubjectDialog), { ssr: false });
 const PaperDialog = dynamic(() => import('../paper/PaperDialog').then(mod => mod.PaperDialog), { ssr: false });
 
+const SubjectProgressBadge = ({ subject }: { subject: Subject }) => {
+    const overallProgress = useMemo(() => {
+        const allProgressItems = subject.papers.flatMap(p => p.chapters.flatMap(c => c.progressItems));
+        const totalCompleted = allProgressItems.reduce((acc, item) => acc + item.completed, 0);
+        const totalOverall = allProgressItems.reduce((acc, item) => acc + item.total, 0);
+        if (totalOverall === 0) {
+            return 0;
+        }
+        return Math.round((totalCompleted / totalOverall) * 100);
+    }, [subject.papers]);
+
+    return (
+        <Badge variant={overallProgress === 100 ? "default" : "secondary"} className={cn("ml-2", overallProgress === 100 && "bg-green-600")}>
+            {overallProgress}%
+        </Badge>
+    );
+};
 
 export function SubjectList() {
   const { subjects, dispatch } = useContext(AppDataContext);
@@ -68,8 +87,9 @@ export function SubjectList() {
               <div className="flex items-center justify-between p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
-                     <CardTitle>
+                     <CardTitle className="flex items-center">
                        {subject.name}
+                       <SubjectProgressBadge subject={subject} />
                       </CardTitle>
                      <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                    </div>
