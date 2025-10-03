@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 import dynamic from 'next/dynamic';
 import { Paper } from "@/lib/types";
 import { AppDataContext } from "@/context/AppDataContext";
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ChapterList } from "../chapter/ChapterList";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const PaperDialog = dynamic(() => import('@/components/edutrack/paper/PaperDialog').then(mod => mod.PaperDialog), { ssr: false });
 const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
@@ -25,6 +27,25 @@ interface PaperListProps {
   papers: Paper[];
   subjectId: string;
 }
+
+const PaperProgressBadge = ({ paper }: { paper: Paper }) => {
+    const overallProgress = useMemo(() => {
+        const allProgressItems = paper.chapters.flatMap(c => c.progressItems);
+        const totalCompleted = allProgressItems.reduce((acc, item) => acc + item.completed, 0);
+        const totalOverall = allProgressItems.reduce((acc, item) => acc + item.total, 0);
+        if (totalOverall === 0) {
+            return 0;
+        }
+        return Math.round((totalCompleted / totalOverall) * 100);
+    }, [paper.chapters]);
+
+    return (
+        <Badge variant={overallProgress === 100 ? "default" : "secondary"} className={cn("ml-2", overallProgress === 100 && "bg-green-600")}>
+            {overallProgress}%
+        </Badge>
+    );
+};
+
 
 export function PaperList({ papers, subjectId }: PaperListProps) {
   const { dispatch } = useContext(AppDataContext);
@@ -69,7 +90,7 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
               <div className="flex items-center justify-between p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
-                     <CardTitle className="text-lg">{paper.name}</CardTitle>
+                     <CardTitle className="text-lg flex items-center">{paper.name} <PaperProgressBadge paper={paper} /></CardTitle>
                      <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                    </div>
                 </AccordionTrigger>
