@@ -2,11 +2,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { EduTrackLogo } from './EduTrackLogo';
 import { useAuth, useUser } from '@/firebase/provider';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { Sparkles, CircleUser, LogOut } from 'lucide-react';
+import { Sparkles, CircleUser, LogOut, KeyRound } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +16,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ChangePasswordDialog } from './auth/ChangePasswordDialog';
 
 export function AppHeader() {
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const handleSignOut = async () => {
     await auth.signOut();
@@ -27,43 +30,55 @@ export function AppHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <Link href="/" className="flex items-center space-x-2 mr-auto">
-          <EduTrackLogo className="h-6 w-6" />
-          <span className="font-bold text-lg">EduTrack</span>
-        </Link>
-        {user && (
-          <div className="flex items-center gap-4">
-            <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
-              Hello, {user.displayName || 'User'}
-            </span>
+    <>
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center">
+          <Link href="/" className="flex items-center space-x-2 mr-auto">
+            <EduTrackLogo className="h-6 w-6" />
+            <span className="font-bold text-lg">EduTrack</span>
+          </Link>
+          {user && (
+            <div className="flex items-center gap-4">
+              <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Hello, {user.displayName || 'User'}
+              </span>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="icon" className="rounded-full">
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex flex-col items-start" disabled>
-                  <span>Logged in as</span>
-                  <span className="font-medium text-foreground">{user.email}</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign Out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
-      </div>
-    </header>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="icon" className="rounded-full">
+                    <CircleUser className="h-5 w-5" />
+                    <span className="sr-only">Toggle user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="flex flex-col items-start" disabled>
+                    <span>Logged in as</span>
+                    <span className="font-medium text-foreground">{user.email}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    <span>Change Password</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
+        </div>
+      </header>
+      {user && (
+        <ChangePasswordDialog
+          open={isChangePasswordOpen}
+          onOpenChange={setChangePasswordOpen}
+        />
+      )}
+    </>
   );
 }
