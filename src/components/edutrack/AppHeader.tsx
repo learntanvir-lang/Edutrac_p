@@ -54,7 +54,7 @@ export function AppHeader() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full transition-transform duration-300 hover:scale-110">
-                    <Avatar className="h-9 w-9">
+                    <Avatar className="h-9 w-9 border-2 border-primary/50">
                       <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
                       <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
                     </Avatar>
