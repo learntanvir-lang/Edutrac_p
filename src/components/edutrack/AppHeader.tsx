@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChangePasswordDialog } from './auth/ChangePasswordDialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export function AppHeader() {
   const { user } = useUser();
@@ -28,6 +29,11 @@ export function AppHeader() {
     await auth.signOut();
     router.push('/login');
   };
+  
+  const getInitials = (name?: string | null) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).slice(0, 2).join('');
+  }
 
   return (
     <>
@@ -47,16 +53,18 @@ export function AppHeader() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="icon" className="rounded-full">
-                    <CircleUser className="h-5 w-5" />
-                    <span className="sr-only">Toggle user menu</span>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full transition-transform duration-300 hover:scale-110">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} />
+                      <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="flex flex-col items-start" disabled>
-                    <span>Logged in as</span>
+                    <span className="text-xs text-muted-foreground">Logged in as</span>
                     <span className="font-medium text-foreground">{user.email}</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
