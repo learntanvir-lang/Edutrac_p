@@ -39,9 +39,6 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     
-    // Optimistically navigate to the dashboard
-    router.push("/");
-
     try {
       if (action === "signup") {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -52,6 +49,7 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(auth, email, password);
       }
       // The redirection is now handled by the root page's auth check.
+      router.push("/");
     } catch (err: any) {
       setError(err.message);
       toast({
@@ -59,8 +57,6 @@ export default function LoginPage() {
         title: "Authentication Failed",
         description: err.message,
       });
-      // If there was an error, navigate back to the login page
-      router.push("/login");
     } finally {
       setLoading(false);
     }
