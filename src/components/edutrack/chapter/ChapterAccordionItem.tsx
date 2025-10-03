@@ -59,7 +59,7 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                             <div className="flex items-center gap-3">
                                 <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
                                 <span className="font-bold text-lg text-primary">
-                                    {chapter.number ? `Chapter-${chapter.number}::${chapter.name}`: chapter.name}
+                                    {chapter.number ? `Chapter-${chapter.number}:${chapter.name}`: chapter.name}
                                 </span>
                                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                             </div>
