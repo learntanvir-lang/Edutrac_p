@@ -1,8 +1,8 @@
 
-
 "use client";
 
 import { useState, useContext, memo } from "react";
+import dynamic from 'next/dynamic';
 import { Chapter } from "@/lib/types";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AppDataContext } from "@/context/AppDataContext";
-import { ChapterDialog } from "./ChapterDialog";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+
+const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
+
 
 interface ChapterAccordionItemProps {
     chapter: Chapter;
@@ -138,15 +140,17 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
             </AccordionItem>
 
             {/* This dialog now handles everything */}
-            <ChapterDialog
+            {isEditingChapter && <ChapterDialog
                 open={isEditingChapter}
                 onOpenChange={setIsEditingChapter}
                 subjectId={subjectId}
                 paperId={paperId}
                 chapter={chapter}
-            />
+            />}
         </>
     );
 }
 
 export const ChapterAccordionItem = memo(ChapterAccordionItemComponent);
+
+    

@@ -4,11 +4,10 @@
 import { createContext, ReactNode, useContext } from "react";
 import { Subject, Exam, Paper, Chapter } from "@/lib/types";
 import { v4 as uuidv4 } from 'uuid';
-import { useUser, useFirestore } from "@/firebase";
+import { useUser, useFirestore, useMemoFirebase } from "@/firebase";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { doc, collection, runTransaction } from "firebase/firestore";
 import { setDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase/non-blocking-updates";
-import { useMemoFirebase } from "@/firebase/provider";
 
 type AppState = {
   subjects: Subject[];
@@ -201,3 +200,5 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
   // Only render the DataProvider if there is a logged-in user
   return <DataProvider>{children}</DataProvider>;
 }
+
+    

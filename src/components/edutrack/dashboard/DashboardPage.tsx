@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useMemo, useContext, lazy } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { AppDataContext } from '@/context/AppDataContext';
@@ -100,3 +101,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

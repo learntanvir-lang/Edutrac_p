@@ -115,9 +115,11 @@ function ExamItemComponent({ exam }: ExamItemProps) {
             </div>
         </CardFooter>
       </Card>
-      <ExamDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} exam={exam} />
+      {isEditDialogOpen && <ExamDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} exam={exam} />}
     </>
   );
 }
 
 export const ExamItem = memo(ExamItemComponent);
+
+    
