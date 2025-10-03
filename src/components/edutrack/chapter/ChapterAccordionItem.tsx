@@ -101,11 +101,11 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                             <div key={item.id}>
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="text-sm text-foreground font-semibold">{item.name}</span>
-                                                    <span className="text-sm font-medium text-muted-foreground">{item.completed} / {item.total}</span>
+                                                    <span className="text-base font-semibold text-primary">{item.completed} / {item.total}</span>
                                                 </div>
                                                 <div className="relative">
-                                                  <Progress value={progress} className="h-5" />
-                                                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
+                                                  <Progress value={progress} className="h-5 bg-primary/20" />
+                                                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary">
                                                     {progress}%
                                                   </span>
                                                 </div>
