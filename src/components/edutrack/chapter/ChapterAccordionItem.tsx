@@ -17,6 +17,7 @@ import {
 import { AppDataContext } from "@/context/AppDataContext";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { v4 as uuidv4 } from 'uuid';
 
 const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
 
@@ -41,6 +42,8 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
     };
 
     const handleDuplicate = () => {
+        // The optimistic update will now be handled by the reducer
+        // It needs the full chapter object to create a duplicate
         dispatch({
             type: "DUPLICATE_CHAPTER",
             payload: { subjectId, paperId, chapter },

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useReducer, useEffect, useMemo } from "react";
 import { Subject, Exam, Paper, Chapter } from "@/lib/types";
 import { v4 as uuidv4 } from 'uuid';
 import { useUser, useFirestore, useMemoFirebase } from "@/firebase";
@@ -16,6 +16,7 @@ type AppState = {
 };
 
 type Action =
+  | { type: "SET_INITIAL_DATA"; payload: { subjects: Subject[], exams: Exam[] } }
   | { type: "ADD_SUBJECT"; payload: Subject }
   | { type: "UPDATE_SUBJECT"; payload: Subject }
   | { type: "DELETE_SUBJECT"; payload: string }
@@ -37,6 +38,76 @@ const initialState: AppState = {
   isLoading: true,
 };
 
+const appReducer = (state: AppState, action: Action): AppState => {
+  switch (action.type) {
+    case "SET_INITIAL_DATA":
+      return { ...state, subjects: action.payload.subjects, exams: action.payload.exams, isLoading: false };
+    case "ADD_SUBJECT":
+      return { ...state, subjects: [...state.subjects, action.payload] };
+    case "UPDATE_SUBJECT":
+      return { ...state, subjects: state.subjects.map(s => s.id === action.payload.id ? action.payload : s) };
+    case "DELETE_SUBJECT":
+      return { ...state, subjects: state.subjects.filter(s => s.id !== action.payload) };
+    case "ADD_EXAM":
+        return { ...state, exams: [...state.exams, action.payload] };
+    case "UPDATE_EXAM":
+        return { ...state, exams: state.exams.map(e => e.id === action.payload.id ? action.payload : e) };
+    case "DELETE_EXAM":
+        return { ...state, exams: state.exams.filter(e => e.id !== action.payload) };
+    case "ADD_PAPER":
+    case "UPDATE_PAPER":
+    case "DELETE_PAPER":
+    case "ADD_CHAPTER":
+    case "UPDATE_CHAPTER":
+    case "DELETE_CHAPTER":
+    case "DUPLICATE_CHAPTER":
+    case "REORDER_CHAPTERS": {
+      const { subjectId } = action.payload;
+      return {
+        ...state,
+        subjects: state.subjects.map(subject => {
+          if (subject.id === subjectId) {
+            let newPapers = [...subject.papers];
+            if (action.type === 'ADD_PAPER') {
+              newPapers.push(action.payload.paper);
+            } else if (action.type === 'UPDATE_PAPER') {
+              newPapers = newPapers.map(p => p.id === action.payload.paper.id ? action.payload.paper : p);
+            } else if (action.type === 'DELETE_PAPER') {
+              newPapers = newPapers.filter(p => p.id !== action.payload.paperId);
+            } else {
+              const { paperId } = action.payload;
+              newPapers = newPapers.map(paper => {
+                if (paper.id === paperId) {
+                  let newChapters = [...paper.chapters];
+                   if (action.type === 'ADD_CHAPTER') {
+                      newChapters.push(action.payload.chapter);
+                  } else if (action.type === 'UPDATE_CHAPTER') {
+                      newChapters = newChapters.map(c => c.id === action.payload.chapter.id ? action.payload.chapter : c);
+                  } else if (action.type === 'DELETE_CHAPTER') {
+                      newChapters = newChapters.filter(c => c.id !== action.payload.chapterId);
+                  } else if (action.type === 'DUPLICATE_CHAPTER') {
+                      const newChapter: Chapter = {...action.payload.chapter, id: uuidv4(), name: `${action.payload.chapter.name} (Copy)`};
+                      newChapters.push(newChapter);
+                  } else if (action.type === 'REORDER_CHAPTERS') {
+                      const [removed] = newChapters.splice(action.payload.startIndex, 1);
+                      newChapters.splice(action.payload.endIndex, 0, removed);
+                  }
+                  return {...paper, chapters: newChapters };
+                }
+                return paper;
+              });
+            }
+            return {...subject, papers: newPapers };
+          }
+          return subject;
+        })
+      };
+    }
+    default:
+      return state;
+  }
+}
+
 export const AppDataContext = createContext<{
   subjects: Subject[];
   exams: Exam[];
@@ -50,6 +121,7 @@ export const AppDataContext = createContext<{
 const DataProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useUser();
   const firestore = useFirestore();
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
   const subjectsRef = useMemoFirebase(() => user ? collection(firestore, 'users', user.uid, 'subjects') : null, [user, firestore]);
   const examsRef = useMemoFirebase(() => user ? collection(firestore, 'users', user.uid, 'exams') : null, [user, firestore]);
@@ -57,20 +129,32 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: subjectsData, isLoading: subjectsLoading } = useCollection<Subject>(subjectsRef);
   const { data: examsData, isLoading: examsLoading } = useCollection<Exam>(examsRef);
 
+  const isDataLoading = subjectsLoading || examsLoading;
+
+  useEffect(() => {
+    if (!isDataLoading) {
+        dispatch({
+            type: "SET_INITIAL_DATA",
+            payload: {
+                subjects: subjectsData || [],
+                exams: examsData || [],
+            },
+        });
+    }
+  }, [isDataLoading, subjectsData, examsData]);
+
   const appDispatch = (action: Action) => {
     if (!user) return;
+    
+    // Optimistic UI update
+    dispatch(action);
 
     switch (action.type) {
-      case "ADD_SUBJECT": {
-        const newSubject = action.payload;
-        const subjectRef = doc(firestore, `users/${user.uid}/subjects`, newSubject.id);
-        setDocumentNonBlocking(subjectRef, newSubject, {});
-        break;
-      }
+      case "ADD_SUBJECT":
       case "UPDATE_SUBJECT": {
-        const updatedSubject = action.payload;
-        const subjectRef = doc(firestore, `users/${user.uid}/subjects`, updatedSubject.id);
-        updateDocumentNonBlocking(subjectRef, updatedSubject);
+        const subject = action.payload;
+        const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subject.id);
+        setDocumentNonBlocking(subjectRef, subject, {merge: true});
         break;
       }
        case "DELETE_SUBJECT": {
@@ -79,89 +163,68 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         deleteDocumentNonBlocking(subjectRef);
         break;
       }
-      case "ADD_PAPER": {
-          const { subjectId, paper } = action.payload;
-          const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
-          runTransaction(firestore, async (transaction) => {
-              const subjectDoc = await transaction.get(subjectRef);
-              if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentData = subjectDoc.data() as Subject;
-              const currentPapers = currentData.papers || [];
-              const updatedPapers = [...currentPapers, paper]
-              transaction.update(subjectRef, { papers: updatedPapers });
-          }).catch(console.error);
-          break;
-      }
-      case "UPDATE_PAPER": {
-          const { subjectId, paper } = action.payload;
-          const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
-          runTransaction(firestore, async (transaction) => {
-              const subjectDoc = await transaction.get(subjectRef);
-              if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentData = subjectDoc.data() as Subject;
-              const updatedPapers = currentData.papers.map((p: Paper) => p.id === paper.id ? paper : p);
-              transaction.update(subjectRef, { papers: updatedPapers });
-          }).catch(console.error);
-          break;
-      }
+      case "ADD_PAPER": 
+      case "UPDATE_PAPER":
       case "DELETE_PAPER": {
-          const { subjectId, paperId } = action.payload;
-          const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
-           runTransaction(firestore, async (transaction) => {
-              const subjectDoc = await transaction.get(subjectRef);
-              if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentData = subjectDoc.data() as Subject;
-              const updatedPapers = currentData.papers.filter((p: Paper) => p.id !== paperId);
-              transaction.update(subjectRef, { papers: updatedPapers });
-          }).catch(console.error);
+          const { subjectId } = action.payload;
+          const subject = state.subjects.find(s => s.id === subjectId);
+          if (subject) {
+            let updatedSubject;
+            if(action.type === 'ADD_PAPER') {
+                updatedSubject = {...subject, papers: [...subject.papers, action.payload.paper]};
+            } else if (action.type === 'UPDATE_PAPER') {
+                updatedSubject = {...subject, papers: subject.papers.map(p => p.id === action.payload.paper.id ? action.payload.paper : p)};
+            } else { // DELETE_PAPER
+                updatedSubject = {...subject, papers: subject.papers.filter(p => p.id !== action.payload.paperId)};
+            }
+            const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
+            updateDocumentNonBlocking(subjectRef, updatedSubject);
+          }
           break;
       }
       case "ADD_CHAPTER":
       case "UPDATE_CHAPTER":
       case "DELETE_CHAPTER":
-      case "REORDER_CHAPTERS":
-      case "DUPLICATE_CHAPTER": {
+      case "DUPLICATE_CHAPTER":
+      case "REORDER_CHAPTERS": {
          const { subjectId, paperId } = action.payload;
-         const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
-          runTransaction(firestore, async (transaction) => {
-              const subjectDoc = await transaction.get(subjectRef);
-              if (!subjectDoc.exists()) throw "Subject does not exist!";
-              
-              const currentData = subjectDoc.data() as Subject;
-              const newPapers = currentData.papers.map((p: Paper) => {
-                  if (p.id === paperId) {
-                      let newChapters = [...p.chapters];
-                      if (action.type === 'ADD_CHAPTER') {
-                          newChapters.push(action.payload.chapter);
-                      } else if (action.type === 'UPDATE_CHAPTER') {
-                           newChapters = newChapters.map(c => c.id === action.payload.chapter.id ? action.payload.chapter : c);
-                      } else if (action.type === 'DELETE_CHAPTER') {
-                          newChapters = newChapters.filter(c => c.id !== action.payload.chapterId);
-                      } else if (action.type === 'DUPLICATE_CHAPTER') {
-                         const newChapter: Chapter = {...action.payload.chapter, id: uuidv4(), name: `${action.payload.chapter.name} (Copy)`};
-                         newChapters.push(newChapter);
-                      } else if (action.type === 'REORDER_CHAPTERS') {
-                          const [removed] = newChapters.splice(action.payload.startIndex, 1);
-                          newChapters.splice(action.payload.endIndex, 0, removed);
-                      }
-                      return {...p, chapters: newChapters};
-                  }
-                  return p;
-              });
-              transaction.update(subjectRef, { papers: newPapers });
-          }).catch(console.error);
+         const subject = state.subjects.find(s => s.id === subjectId);
+         if (subject) {
+            const paper = subject.papers.find(p => p.id === paperId);
+            if(paper){
+                let newChapters = [...paper.chapters];
+                 if (action.type === 'ADD_CHAPTER') {
+                    newChapters.push(action.payload.chapter);
+                } else if (action.type === 'UPDATE_CHAPTER') {
+                    newChapters = newChapters.map(c => c.id === action.payload.chapter.id ? action.payload.chapter : c);
+                } else if (action.type === 'DELETE_CHAPTER') {
+                    newChapters = newChapters.filter(c => c.id !== action.payload.chapterId);
+                } else if (action.type === 'DUPLICATE_CHAPTER') {
+                    const originalChapter = action.payload.chapter;
+                    const newChapter: Chapter = {...originalChapter, id: uuidv4(), name: `${originalChapter.name} (Copy)`};
+                    // Get the index of the original chapter to insert the copy after it
+                    const originalIndex = newChapters.findIndex(c => c.id === originalChapter.id);
+                    newChapters.splice(originalIndex + 1, 0, newChapter);
+                } else if (action.type === 'REORDER_CHAPTERS') {
+                    const [removed] = newChapters.splice(action.payload.startIndex, 1);
+                    newChapters.splice(action.payload.endIndex, 0, removed);
+                }
+
+                const updatedPaper = {...paper, chapters: newChapters};
+                const updatedPapers = subject.papers.map(p => p.id === paperId ? updatedPaper : p);
+                const updatedSubject = {...subject, papers: updatedPapers};
+
+                const subjectRef = doc(firestore, `users/${user.uid}/subjects`, subjectId);
+                updateDocumentNonBlocking(subjectRef, updatedSubject);
+            }
+         }
           break;
       }
-      case "ADD_EXAM": {
-        const newExam = action.payload;
-        const examRef = doc(firestore, `users/${user.uid}/exams`, newExam.id);
-        setDocumentNonBlocking(examRef, newExam, {});
-        break;
-      }
+      case "ADD_EXAM":
       case "UPDATE_EXAM": {
-        const updatedExam = action.payload;
-        const examRef = doc(firestore, `users/${user.uid}/exams`, updatedExam.id);
-        updateDocumentNonBlocking(examRef, updatedExam);
+        const exam = action.payload;
+        const examRef = doc(firestore, `users/${user.uid}/exams`, exam.id);
+        setDocumentNonBlocking(examRef, exam, { merge: true });
         break;
       }
       case "DELETE_EXAM": {
@@ -174,21 +237,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         break;
     }
   };
-
-  const localDispatch = (action: Action) => {
-      // The local state update is now handled by the realtime listener
-      // We just need to trigger the Firestore update
-      appDispatch(action);
-  };
   
-  const state: AppState = {
-    subjects: subjectsData || [],
-    exams: examsData || [],
-    isLoading: subjectsLoading || examsLoading,
-  }
-
   return (
-    <AppDataContext.Provider value={{ ...state, dispatch: localDispatch }}>
+    <AppDataContext.Provider value={{ ...state, isLoading: state.isLoading, dispatch: appDispatch }}>
       {children}
     </AppDataContext.Provider>
   );
@@ -211,3 +262,5 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
   // Only render the DataProvider if there is a logged-in user
   return <DataProvider>{children}</DataProvider>;
 }
+
+    
