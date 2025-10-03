@@ -96,14 +96,19 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                 </div>
                                 <div className="space-y-4 rounded-md bg-muted/50 p-4">
                                     {chapter.progressItems.map(item => {
-                                        const progress = item.total > 0 ? (item.completed / item.total) * 100 : 0;
+                                        const progress = item.total > 0 ? Math.round((item.completed / item.total) * 100) : 0;
                                         return (
                                             <div key={item.id}>
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <span className="text-sm text-foreground font-medium">{item.name}</span>
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="text-sm text-foreground font-semibold">{item.name}</span>
                                                     <span className="text-sm font-medium text-muted-foreground">{item.completed} / {item.total}</span>
                                                 </div>
-                                                <Progress value={progress} />
+                                                <div className="relative">
+                                                  <Progress value={progress} className="h-5" />
+                                                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
+                                                    {progress}%
+                                                  </span>
+                                                </div>
                                             </div>
                                         );
                                     })}
@@ -122,7 +127,7 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         {chapter.resourceLinks.map(link => (
-                                             <Button key={link.id} variant="outline" size="sm" className="w-full justify-between bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800" asChild>
+                                             <Button key={link.id} variant="outline" size="sm" className="w-full justify-between bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800 hover:border-blue-300" asChild>
                                                 <Link href={link.url} target="_blank" rel="noopener noreferrer">
                                                     <span className="truncate">{link.description || link.url}</span>
                                                     <ExternalLink className="h-4 w-4 ml-2 flex-shrink-0" />
@@ -133,7 +138,7 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                 </div>
                             )}
 
-                             <Button variant="outline" size="sm" className="w-full mt-4" onClick={() => setIsEditingChapter(true)}>
+                             <Button variant="outline" size="sm" className="w-full mt-4 hover:bg-accent/50 hover:text-accent-foreground" onClick={() => setIsEditingChapter(true)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit Chapter Details
                             </Button>
@@ -155,5 +160,3 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
 }
 
 export const ChapterAccordionItem = memo(ChapterAccordionItemComponent);
-
-    
