@@ -1,44 +1,16 @@
 {
   "entities": {
-    "Exam": {
+    "UserProfile": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Exam",
+      "title": "User Profile",
       "type": "object",
-      "description": "Represents an exam with its details and scheduling information.",
+      "description": "Represents a user's profile information.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Exam entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the exam (e.g., Daily Exam-03)."
-        },
-        "subjectId": {
-          "type": "string",
-          "description": "Reference to Subject. (Relationship: Subject 1:N Exam)"
-        },
-        "chapterId": {
-          "type": "string",
-          "description": "Reference to Chapter. (Relationship: Chapter 1:N Exam)"
-        },
-        "examDate": {
-          "type": "string",
-          "description": "Date and time when the exam is scheduled.",
-          "format": "date-time"
-        },
-        "completed": {
-          "type": "boolean",
-          "description": "Indicates whether the exam has been completed."
-        }
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." }
       },
-      "required": [
-        "id",
-        "name",
-        "subjectId",
-        "chapterId",
-        "examDate"
-      ]
+      "required": ["uid", "email"]
     },
     "Subject": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -46,19 +18,15 @@
       "type": "object",
       "description": "Represents a subject, such as Physics or Chemistry.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Subject entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the subject (e.g., Physics, Chemistry)."
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "papers": {
+          "type": "array",
+          "items": { "$ref": "#/entities/Paper" }
         }
       },
-      "required": [
-        "id",
-        "name"
-      ]
+      "required": ["id", "name", "papers"]
     },
     "Paper": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -66,24 +34,14 @@
       "type": "object",
       "description": "Represents a paper within a subject (e.g., 1st Paper, 2nd Paper).",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Paper entity."
-        },
-        "subjectId": {
-          "type": "string",
-          "description": "Reference to Subject. (Relationship: Subject 1:N Paper)"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the paper (e.g., 1st Paper, 2nd Paper)."
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "chapters": {
+          "type": "array",
+          "items": { "$ref": "#/entities/Chapter" }
         }
       },
-      "required": [
-        "id",
-        "subjectId",
-        "name"
-      ]
+      "required": ["id", "name", "chapters"]
     },
     "Chapter": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -91,200 +49,75 @@
       "type": "object",
       "description": "Represents a chapter within a paper.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Chapter entity."
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "number": { "type": "string" },
+        "isCompleted": { "type": "boolean" },
+        "progressItems": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ProgressItem" }
         },
-        "paperId": {
-          "type": "string",
-          "description": "Reference to Paper. (Relationship: Paper 1:N Chapter)"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the chapter."
+        "resourceLinks": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ResourceLink" }
         }
       },
-      "required": [
-        "id",
-        "paperId",
-        "name"
-      ]
+      "required": ["id", "name", "isCompleted", "progressItems", "resourceLinks"]
     },
-    "Activity": {
+    "ProgressItem": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Progress Item",
+        "type": "object",
+        "properties": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "completed": { "type": "number" },
+            "total": { "type": "number" }
+        },
+        "required": ["id", "name", "completed", "total"]
+    },
+    "ResourceLink": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Resource Link",
+        "type": "object",
+        "properties": {
+            "id": { "type": "string" },
+            "url": { "type": "string", "format": "uri" },
+            "description": { "type": "string" }
+        },
+        "required": ["id", "url", "description"]
+    },
+    "Exam": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Activity",
+      "title": "Exam",
       "type": "object",
-      "description": "Represents an activity within a chapter (e.g., Class, Practice, Book Study).",
+      "description": "Represents an exam with its details and scheduling information.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Activity entity."
-        },
-        "chapterId": {
-          "type": "string",
-          "description": "Reference to Chapter. (Relationship: Chapter 1:N Activity)"
-        },
-        "type": {
-          "type": "string",
-          "description": "Type of activity (e.g., Class, Practice, Book Study)."
-        },
-        "link": {
-          "type": "string",
-          "description": "Link associated with the activity, if any.",
-          "format": "uri"
-        },
-        "completed": {
-          "type": "boolean",
-          "description": "Indicates whether the activity has been completed."
-        },
-        "counter": {
-          "type": "number",
-          "description": "A counter associated with the activity (e.g., number of problems solved)."
-        },
-        "summary": {
-          "type": "string",
-          "description": "A short AI generated summary of the activity."
-        }
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "subjectIds": { "type": "array", "items": { "type": "string" } },
+        "chapterIds": { "type": "array", "items": { "type": "string" } },
+        "date": { "type": "string", "format": "date-time" },
+        "isCompleted": { "type": "boolean" }
       },
-      "required": [
-        "id",
-        "chapterId",
-        "type"
-      ]
+      "required": ["id", "name", "subjectIds", "chapterIds", "date", "isCompleted"]
     }
   },
   "auth": {
-    "providers": [
-      "password"
-    ]
+    "providers": ["password"]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/users/{userId}/subjects/{subjectId}",
-        "definition": {
-          "entityName": "Subject",
-          "schema": {
-            "$ref": "#/backend/entities/Subject"
-          },
-          "description": "Stores subjects associated with a specific user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "subjectId",
-              "description": "Unique identifier for the subject."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/subjects/{subjectId}/papers/{paperId}",
-        "definition": {
-          "entityName": "Paper",
-          "schema": {
-            "$ref": "#/backend/entities/Paper"
-          },
-          "description": "Stores papers associated with a specific subject and user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "subjectId",
-              "description": "Unique identifier for the subject."
-            },
-            {
-              "name": "paperId",
-              "description": "Unique identifier for the paper."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}",
-        "definition": {
-          "entityName": "Chapter",
-          "schema": {
-            "$ref": "#/backend/entities/Chapter"
-          },
-          "description": "Stores chapters associated with a specific paper, subject, and user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "subjectId",
-              "description": "Unique identifier for the subject."
-            },
-            {
-              "name": "paperId",
-              "description": "Unique identifier for the paper."
-            },
-            {
-              "name": "chapterId",
-              "description": "Unique identifier for the chapter."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/subjects/{subjectId}/papers/{paperId}/chapters/{chapterId}/activities/{activityId}",
-        "definition": {
-          "entityName": "Activity",
-          "schema": {
-            "$ref": "#/backend/entities/Activity"
-          },
-          "description": "Stores activities associated with a specific chapter, paper, subject, and user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "subjectId",
-              "description": "Unique identifier for the subject."
-            },
-            {
-              "name": "paperId",
-              "description": "Unique identifier for the paper."
-            },
-            {
-              "name": "chapterId",
-              "description": "Unique identifier for the chapter."
-            },
-            {
-              "name": "activityId",
-              "description": "Unique identifier for the activity."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/exams/{examId}",
-        "definition": {
-          "entityName": "Exam",
-          "schema": {
-            "$ref": "#/backend/entities/Exam"
-          },
-          "description": "Stores exams associated with a specific user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "examId",
-              "description": "Unique identifier for the exam."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "The Firestore structure is designed to create a hierarchical organization of data, following the pattern: Users -> Subjects -> Papers -> Chapters -> Activities -> Exams. This structure facilitates easy querying and management of the relationships between these entities. Since this is a front-end only application with local storage, there is no concept of authorization. However, if authorization were to be required, each level of the hierarchy would need to denormalize user membership data, where relevant, to ensure Authorization Independence.  Since this is a front-end only application, QAPs do not apply."
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user profile information."
+    },
+    "/users/{userId}/subjects/{subjectId}": {
+      "schema": { "$ref": "#/entities/Subject" },
+      "description": "Stores the subjects for a specific user. Papers and chapters are nested within."
+    },
+    "/users/{userId}/exams/{examId}": {
+      "schema": { "$ref": "#/entities/Exam" },
+      "description": "Stores the exams scheduled for a specific user."
+    }
   }
 }
