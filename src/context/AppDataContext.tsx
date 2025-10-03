@@ -200,5 +200,3 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
   // Only render the DataProvider if there is a logged-in user
   return <DataProvider>{children}</DataProvider>;
 }
-
-    
