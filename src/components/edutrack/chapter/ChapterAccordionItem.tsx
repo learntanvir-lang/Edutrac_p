@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useContext, memo } from "react";
+import { useState, useContext, memo, useMemo } from "react";
 import dynamic from 'next/dynamic';
 import { Chapter } from "@/lib/types";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -17,7 +17,7 @@ import {
 import { AppDataContext } from "@/context/AppDataContext";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { v4 as uuidv4 } from 'uuid';
+import { Badge } from "@/components/ui/badge";
 
 const ChapterDialog = dynamic(() => import('@/components/edutrack/chapter/ChapterDialog').then(mod => mod.ChapterDialog), { ssr: false });
 
@@ -42,13 +42,20 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
     };
 
     const handleDuplicate = () => {
-        // The optimistic update will now be handled by the reducer
-        // It needs the full chapter object to create a duplicate
         dispatch({
             type: "DUPLICATE_CHAPTER",
             payload: { subjectId, paperId, chapter },
         });
     };
+
+    const overallProgress = useMemo(() => {
+        const totalCompleted = chapter.progressItems.reduce((acc, item) => acc + item.completed, 0);
+        const totalOverall = chapter.progressItems.reduce((acc, item) => acc + item.total, 0);
+        if (totalOverall === 0) {
+            return 0;
+        }
+        return Math.round((totalCompleted / totalOverall) * 100);
+    }, [chapter.progressItems]);
     
     return (
         <>
@@ -61,6 +68,9 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                 <span className="font-bold text-lg text-primary">
                                     {chapter.number ? `Chapter-${chapter.number}:${chapter.name}`: chapter.name}
                                 </span>
+                                <Badge variant={overallProgress === 100 ? "default" : "secondary"} className={cn(overallProgress === 100 && "bg-green-600")}>
+                                    {overallProgress}%
+                                </Badge>
                                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                             </div>
                         </AccordionTrigger>
