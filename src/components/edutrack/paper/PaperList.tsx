@@ -87,10 +87,10 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
         {papers.map((paper) => (
           <AccordionItem key={paper.id} value={paper.id} className="border-none">
             <Card className="shadow-sm bg-muted/30">
-              <div className="flex items-center justify-between p-4">
+              <div className="flex items-center justify-between p-3 md:p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
-                     <CardTitle className="text-lg flex items-center">{paper.name} <PaperProgressBadge paper={paper} /></CardTitle>
+                     <CardTitle className="text-base sm:text-lg flex items-center">{paper.name} <PaperProgressBadge paper={paper} /></CardTitle>
                      <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                    </div>
                 </AccordionTrigger>
@@ -112,7 +112,7 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
                   </DropdownMenu>
                 </div>
               </div>
-              <AccordionContent className="px-4 pb-4 pt-0">
+              <AccordionContent className="px-3 md:px-4 pb-3 md:pb-4 pt-0">
                  <div className="border-t pt-4 space-y-4">
                     <ChapterList subjectId={subjectId} paperId={paper.id} chapters={paper.chapters} />
                      <Button variant="outline" size="sm" className="w-full" onClick={() => handleAddChapterClick(paper.id)}>
@@ -144,5 +144,3 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
     </>
   );
 }
-
-    

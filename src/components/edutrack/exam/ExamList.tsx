@@ -31,8 +31,9 @@ export function ExamList() {
 
   return (
     <div className="space-y-8">
-       <div className="flex justify-end">
-            <Button variant="outline" size="sm" onClick={() => setIsExamDialogOpen(true)}>
+       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h2 className="text-2xl font-bold">Exams</h2>
+            <Button variant="outline" onClick={() => setIsExamDialogOpen(true)}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Exam
             </Button>
@@ -47,8 +48,8 @@ export function ExamList() {
         <>
           {upcomingExams.length > 0 && (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Upcoming</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <h3 className="text-xl font-semibold mb-4">Upcoming</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {upcomingExams.map(exam => (
                   <ExamItem 
                     key={exam.id} 
@@ -62,8 +63,8 @@ export function ExamList() {
           {pastExams.length > 0 && (
             <div>
               {upcomingExams.length > 0 && <Separator className="my-8" />}
-              <h2 className="text-2xl font-semibold mb-4">Past</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <h3 className="text-xl font-semibold mb-4">Past</h3>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {pastExams.map(exam => (
                   <ExamItem 
                     key={exam.id} 
@@ -80,5 +81,3 @@ export function ExamList() {
     </div>
   );
 }
-
-    

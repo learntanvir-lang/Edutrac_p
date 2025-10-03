@@ -74,7 +74,9 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
   });
 
   useEffect(() => {
-    // When the dialog opens, reset the form to the correct initial state.
+    // When the dialog opens for editing, reset the form with chapter data.
+    // When opening for creation, reset with default values.
+    // This ensures `useFieldArray` is correctly populated.
     if (open) {
       const defaultValues = isEditing ? chapter : {
         name: "",
@@ -87,7 +89,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
       };
       form.reset(defaultValues);
     }
-  }, [open, chapter, isEditing, form]);
+  }, [open, chapter, isEditing, form.reset]);
 
 
   const { fields: progressFields, append: appendProgress, remove: removeProgress, move: moveProgress } = useFieldArray({
@@ -146,18 +148,18 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh]">
+      <DialogContent className="max-w-md sm:max-w-lg md:max-w-2xl max-h-[90svh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Chapter" : "Add New Chapter"}</DialogTitle>
           <DialogDescription>
             {isEditing ? "Update details, progress, and resources for this chapter." : "Add a new chapter with custom progress trackers."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="pr-6 -mr-6">
-          <div className="max-h-[calc(80vh-200px)]">
+        <ScrollArea className="pr-6 -mr-6 flex-grow">
+          <div className="py-4">
             <Form {...form}>
               <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="number"
@@ -194,7 +196,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                         <div 
                             key={field.id} 
                             className={cn(
-                                "flex items-center gap-2 p-2 rounded-md border border-transparent",
+                                "flex items-start sm:items-center gap-2 p-2 rounded-md border border-transparent flex-col sm:flex-row",
                                 draggedItem?.type === 'progress' && draggedItem?.index === index && "opacity-50 border-dashed border-primary"
                             )}
                             draggable
@@ -202,13 +204,13 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={(e) => handleDrop(e, 'progress', index)}
                         >
-                            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab mt-2" />
-                            <div className="flex-grow grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab mt-2 shrink-0 hidden sm:block" />
+                            <div className="flex-grow grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
                                <FormField
                                     control={form.control}
                                     name={`progressItems.${index}.name`}
                                     render={({ field }) => (
-                                        <FormItem className="md:col-span-2">
+                                        <FormItem className="col-span-2">
                                             <FormLabel className="sr-only">Tracker Name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Tracker Name" {...field} />
@@ -244,7 +246,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                                     )}
                                 />
                             </div>
-                            <Button type="button" variant="ghost" size="icon" onClick={() => removeProgress(index)} className="mt-2 text-destructive">
+                            <Button type="button" variant="ghost" size="icon" onClick={() => removeProgress(index)} className="shrink-0 text-destructive">
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
@@ -262,7 +264,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                     {linkFields.map((field, index) => (
                         <div 
                             key={field.id} 
-                            className={cn(
+                             className={cn(
                                 "flex items-start gap-2 p-2 rounded-md border border-transparent",
                                 draggedItem?.type === 'link' && draggedItem?.index === index && "opacity-50 border-dashed border-primary"
                             )}
@@ -271,7 +273,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={(e) => handleDrop(e, 'link', index)}
                         >
-                            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab mt-2" />
+                            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab mt-2 shrink-0" />
                             <div className="flex-grow space-y-2">
                                 <FormField
                                     control={form.control}
@@ -300,7 +302,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                                     )}
                                 />
                             </div>
-                            <Button type="button" variant="ghost" size="icon" onClick={() => removeLink(index)} className="mt-2 text-destructive">
+                            <Button type="button" variant="ghost" size="icon" onClick={() => removeLink(index)} className="mt-2 text-destructive shrink-0">
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
@@ -322,5 +324,3 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
     </Dialog>
   );
 }
-
-    

@@ -84,10 +84,10 @@ export function SubjectList() {
         {subjects.map(subject => (
           <AccordionItem key={subject.id} value={subject.id} className="border-none">
             <Card className="shadow-sm">
-              <div className="flex items-center justify-between p-4">
+              <div className="flex items-center justify-between p-3 md:p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
-                     <CardTitle className="flex items-center">
+                     <CardTitle className="flex items-center text-base sm:text-lg md:text-xl">
                        {subject.name}
                        <SubjectProgressBadge subject={subject} />
                       </CardTitle>
@@ -115,7 +115,7 @@ export function SubjectList() {
                   </DropdownMenu>
                 </div>
               </div>
-              <AccordionContent className="p-6 pt-0">
+              <AccordionContent className="p-3 md:p-6 pt-0">
                  <div className="border-t pt-4 space-y-4">
                     <PaperList subjectId={subject.id} papers={subject.papers} />
                     <Button variant="outline" size="sm" className="w-full" onClick={() => handleAddPaperClick(subject.id)}>

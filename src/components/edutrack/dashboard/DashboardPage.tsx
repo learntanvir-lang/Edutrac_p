@@ -21,7 +21,7 @@ const SubjectDialog = dynamic(() => import('@/components/edutrack/subject/Subjec
 type View = 'subjects' | 'exams' | null;
 
 export default function DashboardPage() {
-  const [activeView, setActiveView] = useState<View>(null);
+  const [activeView, setActiveView] = useState<View>('subjects');
   const [isSubjectDialogOpen, setIsSubjectDialogOpen] = useState(false);
   const { exams, subjects } = useContext(AppDataContext);
 
@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-        <h1 className="text-3xl font-bold text-foreground mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
           Dashboard
         </h1>
         
@@ -60,7 +60,7 @@ export default function DashboardPage() {
               onClick={() => setActiveView('subjects')}
             >
                 <CardHeader className="flex flex-row items-center gap-4">
-                    <BookOpen className="w-8 h-8 text-primary" />
+                    <BookOpen className="w-8 h-8 text-primary shrink-0" />
                     <div>
                         <CardTitle className="text-xl">Subjects & Syllabus</CardTitle>
                         <CardDescription>Manage all your subjects, papers, and chapters.</CardDescription>
@@ -72,7 +72,7 @@ export default function DashboardPage() {
               onClick={() => setActiveView('exams')}
             >
                 <CardHeader className="flex flex-row items-center gap-4">
-                    <Target className="w-8 h-8 text-primary" />
+                    <Target className="w-8 h-8 text-primary shrink-0" />
                     <div>
                         <CardTitle className="text-xl">Exams</CardTitle>
                         <CardDescription>Track all your upcoming and past exams.</CardDescription>
@@ -84,9 +84,9 @@ export default function DashboardPage() {
         <div className="mt-8">
           {activeView === 'subjects' && (
              <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <h2 className="text-2xl font-bold">Subjects</h2>
-                    <Button variant="outline" size="sm" onClick={() => setIsSubjectDialogOpen(true)}>
+                    <Button variant="outline" onClick={() => setIsSubjectDialogOpen(true)}>
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Add Subject
                     </Button>
@@ -101,5 +101,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

@@ -43,20 +43,20 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
     <>
       <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)]">
         <CardHeader className="pb-4">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
                     <Calendar className="h-4 w-4" />
                     <span>Next Exam</span>
                   </div>
-                  <CardTitle className="text-4xl font-bold">
+                  <CardTitle className="text-3xl md:text-4xl font-bold">
                     {exam.name}
                   </CardTitle>
-                  <CardDescription className="flex items-center gap-2 mt-2 text-primary-foreground/90">
-                      <Calendar className="h-4 w-4" /> {format(new Date(exam.date), "PPPPp")}
+                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 text-primary-foreground/90">
+                      <Calendar className="h-4 w-4" /> <span>{format(new Date(exam.date), "PPPPp")}</span>
                   </CardDescription>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => setIsEditDialogOpen(true)}>
+              <Button variant="secondary" size="sm" onClick={() => setIsEditDialogOpen(true)} className="w-full sm:w-auto">
                   <Pen className="mr-2 h-4 w-4" />
                   Edit
               </Button>
@@ -70,7 +70,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
               </div>
               <div className="flex flex-wrap gap-2">
                 {examDetails.map((detail, index) => detail && (
-                  <Badge key={index} variant="secondary" className="px-3 py-1 text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105">
+                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105">
                     {detail.subjectName} - {detail.chapterName}
                   </Badge>
                 ))}
