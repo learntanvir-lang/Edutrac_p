@@ -85,8 +85,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           runTransaction(firestore, async (transaction) => {
               const subjectDoc = await transaction.get(subjectRef);
               if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentPapers = subjectDoc.data().papers || [];
-              transaction.update(subjectRef, { papers: [...currentPapers, paper] });
+              const currentData = subjectDoc.data() as Subject;
+              const currentPapers = currentData.papers || [];
+              const updatedPapers = [...currentPapers, paper]
+              transaction.update(subjectRef, { papers: updatedPapers });
           }).catch(console.error);
           break;
       }
@@ -96,8 +98,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           runTransaction(firestore, async (transaction) => {
               const subjectDoc = await transaction.get(subjectRef);
               if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentPapers = subjectDoc.data().papers.map((p: Paper) => p.id === paper.id ? paper : p);
-              transaction.update(subjectRef, { papers: currentPapers });
+              const currentData = subjectDoc.data() as Subject;
+              const updatedPapers = currentData.papers.map((p: Paper) => p.id === paper.id ? paper : p);
+              transaction.update(subjectRef, { papers: updatedPapers });
           }).catch(console.error);
           break;
       }
@@ -107,8 +110,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
            runTransaction(firestore, async (transaction) => {
               const subjectDoc = await transaction.get(subjectRef);
               if (!subjectDoc.exists()) throw "Subject does not exist!";
-              const currentPapers = subjectDoc.data().papers.filter((p: Paper) => p.id !== paperId);
-              transaction.update(subjectRef, { papers: currentPapers });
+              const currentData = subjectDoc.data() as Subject;
+              const updatedPapers = currentData.papers.filter((p: Paper) => p.id !== paperId);
+              transaction.update(subjectRef, { papers: updatedPapers });
           }).catch(console.error);
           break;
       }
@@ -123,7 +127,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
               const subjectDoc = await transaction.get(subjectRef);
               if (!subjectDoc.exists()) throw "Subject does not exist!";
               
-              const newPapers = subjectDoc.data().papers.map((p: Paper) => {
+              const currentData = subjectDoc.data() as Subject;
+              const newPapers = currentData.papers.map((p: Paper) => {
                   if (p.id === paperId) {
                       let newChapters = [...p.chapters];
                       if (action.type === 'ADD_CHAPTER') {
@@ -170,6 +175,12 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const localDispatch = (action: Action) => {
+      // The local state update is now handled by the realtime listener
+      // We just need to trigger the Firestore update
+      appDispatch(action);
+  };
+  
   const state: AppState = {
     subjects: subjectsData || [],
     exams: examsData || [],
@@ -177,7 +188,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AppDataContext.Provider value={{ ...state, dispatch: appDispatch }}>
+    <AppDataContext.Provider value={{ ...state, dispatch: localDispatch }}>
       {children}
     </AppDataContext.Provider>
   );
