@@ -105,7 +105,7 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                                 </div>
                                                 <div className="relative">
                                                   <Progress value={progress} className="h-5 bg-primary/20" />
-                                                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary">
+                                                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
                                                     {progress}%
                                                   </span>
                                                 </div>
