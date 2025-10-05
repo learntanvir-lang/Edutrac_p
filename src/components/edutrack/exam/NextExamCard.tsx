@@ -59,11 +59,11 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-5 w-5" />
-                        <span className="text-2xl font-bold animate-hue-text">
+                        <span className="text-2xl font-bold">
                            {formattedDate.split('').map((char, index) => (
                                 <span
                                 key={index}
-                                className="inline-block"
+                                className="animate-wave"
                                 style={{ animationDelay: `${index * 50}ms` }}
                                 >
                                 {char === " " ? "\u00A0" : char}
@@ -73,11 +73,11 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-5 w-5" />
-                         <span className="text-2xl font-bold animate-hue-text">
+                         <span className="text-2xl font-bold">
                            {formattedTime.split('').map((char, index) => (
                                 <span
                                 key={index}
-                                className="inline-block"
+                                className="animate-wave"
                                 style={{ animationDelay: `${(formattedDate.length + index) * 50}ms` }}
                                 >
                                 {char === " " ? "\u00A0" : char}

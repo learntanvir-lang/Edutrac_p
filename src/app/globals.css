@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,11 +78,8 @@
 }
 
 @layer utilities {
-  .animate-hue-text {
-    @apply bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent;
-    animation: hue-rotate 10s infinite linear;
-    text-shadow: 0 0 5px hsl(var(--primary) / 0.5),
-                 0 0 10px hsl(var(--primary) / 0.5),
-                 0 0 20px hsl(var(--primary) / 0.3);
+  .animate-wave {
+    display: inline-block;
+    animation: wave 2.5s ease-in-out infinite;
   }
 }
