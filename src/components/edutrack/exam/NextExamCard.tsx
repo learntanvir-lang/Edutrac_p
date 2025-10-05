@@ -70,7 +70,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
               </div>
               <div className="flex flex-wrap gap-2">
                 {examDetails.map((detail, index) => detail && (
-                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105 animate-pulse">
+                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105">
                     {detail.subjectName} - {detail.chapterName}
                   </Badge>
                 ))}
