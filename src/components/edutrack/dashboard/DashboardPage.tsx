@@ -34,10 +34,11 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 md:mb-6">
           Dashboard
         </h1>
         
+        <div className="mb-6 md:mb-8">
         {nextExam ? (
           <NextExamCard
             exam={nextExam}
@@ -53,13 +54,14 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         )}
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mt-8">
+        <div className="grid md:grid-cols-2 gap-4">
             <Card 
               className={cn("hover:shadow-lg transition-all cursor-pointer", activeView === 'subjects' && 'border-primary ring-2 ring-primary')}
               onClick={() => setActiveView('subjects')}
             >
-                <CardHeader className="flex flex-row items-center gap-4">
+                <CardHeader className="flex-row items-center gap-4">
                     <BookOpen className="w-8 h-8 text-primary shrink-0" />
                     <div>
                         <CardTitle className="text-xl">Subjects & Syllabus</CardTitle>
@@ -71,7 +73,7 @@ export default function DashboardPage() {
               className={cn("hover:shadow-lg transition-all cursor-pointer", activeView === 'exams' && 'border-primary ring-2 ring-primary')}
               onClick={() => setActiveView('exams')}
             >
-                <CardHeader className="flex flex-row items-center gap-4">
+                <CardHeader className="flex-row items-center gap-4">
                     <Target className="w-8 h-8 text-primary shrink-0" />
                     <div>
                         <CardTitle className="text-xl">Exams</CardTitle>

@@ -41,9 +41,9 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
 
   return (
     <>
-      <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl">
+      <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl overflow-hidden">
         <CardHeader>
-            <div className="flex flex-row justify-between items-start gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
                     <Calendar className="h-4 w-4" />
@@ -52,30 +52,36 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <CardTitle className="text-3xl md:text-4xl font-bold">
                     {exam.name}
                   </CardTitle>
-                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-6 text-primary-foreground/90 text-lg font-semibold">
-                      <Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPPp")}</span>
+                  <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
+                      <span className="flex items-center gap-2"><Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPP")}</span></span>
+                      <span className="flex items-center gap-2"><Clock className="h-5 w-5" /> <span>{format(new Date(exam.date), "p")}</span></span>
                   </CardDescription>
               </div>
-              <Button variant="outline" size="icon" onClick={() => setIsEditDialogOpen(true)} className="w-10 h-10 flex-shrink-0 rounded-full bg-transparent border-2 border-primary-foreground/50 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+              <Button variant="outline" size="icon" onClick={() => setIsEditDialogOpen(true)} className="w-10 h-10 flex-shrink-0 rounded-full bg-transparent border-2 border-primary-foreground/50 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground self-start">
                   <Pen className="h-5 w-5" />
               </Button>
             </div>
         </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-            <div className="space-y-2">
+        <CardContent className="space-y-6">
+            <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80">
                   <Info className="h-4 w-4" />
                   <span>Syllabus</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {examDetails.map((detail, index) => detail && (
-                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30">
+                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30">
                     {detail.subjectName} - {detail.chapterName}
                   </Badge>
                 ))}
+                {examDetails.length === 0 && (
+                   <Badge variant="secondary" className="px-3 py-1 text-sm bg-primary-foreground/20 text-primary-foreground">
+                    No specific chapters selected
+                  </Badge>
+                )}
               </div>
             </div>
-            <div className="space-y-2 pt-2">
+            <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80">
                     <Clock className="h-4 w-4" />
                     <span>Time Remaining</span>
@@ -88,5 +94,3 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
     </>
   );
 }
-
-
