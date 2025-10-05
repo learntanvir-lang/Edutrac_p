@@ -6,9 +6,45 @@ import { cn } from '@/lib/utils';
 import { AppHeader } from '@/components/edutrack/AppHeader';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
+const APP_NAME = "EduTrack";
+const APP_DEFAULT_TITLE = "EduTrack - Student Exam & Syllabus Tracker";
+const APP_TITLE_TEMPLATE = "%s - EduTrack";
+const APP_DESCRIPTION = "A modern way to track your exams, subjects, and study progress.";
+
 export const metadata: Metadata = {
-  title: 'EduTrack - Student Exam & Syllabus Tracker',
-  description: 'A modern way to track your exams, subjects, and study progress.',
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
