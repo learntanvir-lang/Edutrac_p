@@ -32,10 +32,10 @@ const calculateTimeLeft = (targetDate: string): TimeLeft | null => {
 
 const CountdownBox = ({ value, label, variant, isPastOrCompleted }: { value: string; label: string, variant: CountdownProps['variant'], isPastOrCompleted: boolean }) => (
     <div className={cn(
-        "rounded-lg p-3 text-center w-full transition-transform duration-300 ease-in-out hover:scale-105",
+        "rounded-lg p-2 sm:p-3 text-center w-full transition-transform duration-300 ease-in-out hover:scale-105",
         variant === 'card' && !isPastOrCompleted ? "bg-primary/10" : "bg-background/20 dark:bg-background/50",
     )}>
-        <div className="text-2xl font-bold text-card-foreground">{value}</div>
+        <div className="text-xl sm:text-2xl font-bold text-card-foreground">{value}</div>
         <div className="text-xs text-muted-foreground uppercase tracking-widest">{label}</div>
     </div>
 );
@@ -62,7 +62,7 @@ export function Countdown({ targetDate, isPastOrCompleted, variant = 'default' }
   
   if (!timeLeft || isPastOrCompleted) {
     return (
-        <div className="grid grid-cols-4 gap-4" aria-label="Countdown timer has finished">
+        <div className="grid grid-cols-4 gap-2 md:gap-4" aria-label="Countdown timer has finished">
             <CountdownBox value="00" label="Days" variant={variant} isPastOrCompleted={isPastOrCompleted} />
             <CountdownBox value="00" label="Hours" variant={variant} isPastOrCompleted={isPastOrCompleted} />
             <CountdownBox value="00" label="Minutes" variant={variant} isPastOrCompleted={isPastOrCompleted} />
