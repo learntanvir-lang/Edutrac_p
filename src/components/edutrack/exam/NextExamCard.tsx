@@ -42,7 +42,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
   return (
     <>
       <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)]">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-2">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
@@ -52,7 +52,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <CardTitle className="text-3xl md:text-4xl font-bold">
                     {exam.name}
                   </CardTitle>
-                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 text-primary-foreground/90 text-lg font-semibold">
+                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-4 text-primary-foreground/90 text-lg font-semibold">
                       <Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPPp")}</span>
                   </CardDescription>
               </div>
@@ -62,7 +62,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
               </Button>
             </div>
         </CardHeader>
-        <CardContent className="space-y-4 md:space-y-6">
+        <CardContent className="space-y-4 md:space-y-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80">
                   <Info className="h-4 w-4" />
