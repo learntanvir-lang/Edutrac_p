@@ -36,8 +36,8 @@ import { Badge } from "@/components/ui/badge";
 
 const examSchema = z.object({
   name: z.string().min(1, "Exam name is required"),
-  subjectIds: z.array(z.string()).min(1, "At least one subject is required"),
-  chapterIds: z.array(z.string()).min(1, "At least one chapter is required"),
+  subjectIds: z.array(z.string()).optional(),
+  chapterIds: z.array(z.string()).optional(),
   date: z.date({ required_error: "Exam date is required" }),
   time: z.string().optional(),
 });
@@ -116,8 +116,8 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
         payload: {
           ...exam,
           name: values.name,
-          subjectIds: values.subjectIds,
-          chapterIds: values.chapterIds,
+          subjectIds: values.subjectIds || [],
+          chapterIds: values.chapterIds || [],
           date: combinedDate.toISOString(),
         },
       });
@@ -127,8 +127,8 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
         payload: {
           id: uuidv4(),
           name: values.name,
-          subjectIds: values.subjectIds,
-          chapterIds: values.chapterIds,
+          subjectIds: values.subjectIds || [],
+          chapterIds: values.chapterIds || [],
           date: combinedDate.toISOString(),
           isCompleted: false,
         },
@@ -148,7 +148,7 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
   
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogContent>
+      <DialogContent className="max-w-md sm:max-w-lg md:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Exam" : "Add Exam"}</DialogTitle>
           <DialogDescription>
@@ -175,7 +175,7 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
               name="subjectIds"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Subject(s)</FormLabel>
+                  <FormLabel>Subject(s) (Optional)</FormLabel>
                   <Popover open={isSubjectSelectOpen} onOpenChange={setSubjectSelectOpen}>
                       <PopoverTrigger asChild>
                           <FormControl>
@@ -221,7 +221,7 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
                                               .flatMap(p => p.chapters)
                                               .map(c => c.id);
                                             
-                                            const newChapterIds = selectedChapterIds.filter(id => availableChapterIds.includes(id));
+                                            const newChapterIds = (form.getValues("chapterIds") || []).filter(id => availableChapterIds.includes(id));
                                             form.setValue("chapterIds", newChapterIds, { shouldValidate: true });
                                         }}
                                     >
@@ -248,7 +248,7 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
                 name="chapterIds"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Chapter(s)</FormLabel>
+                    <FormLabel>Chapter(s) (Optional)</FormLabel>
                     <Popover open={isChapterSelectOpen} onOpenChange={setChapterSelectOpen}>
                         <PopoverTrigger asChild>
                             <FormControl>
@@ -374,3 +374,5 @@ export function ExamDialog({ open, onOpenChange, exam }: ExamDialogProps) {
     </Dialog>
   );
 }
+
+    
