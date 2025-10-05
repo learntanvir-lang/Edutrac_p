@@ -56,9 +56,8 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                       <Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPPp")}</span>
                   </CardDescription>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => setIsEditDialogOpen(true)} className="w-full sm:w-auto">
-                  <Pen className="mr-2 h-4 w-4" />
-                  Edit
+              <Button variant="secondary" size="icon" onClick={() => setIsEditDialogOpen(true)} className="w-10 h-10 flex-shrink-0">
+                  <Pen className="h-5 w-5" />
               </Button>
             </div>
         </CardHeader>
