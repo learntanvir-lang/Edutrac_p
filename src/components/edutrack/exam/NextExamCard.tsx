@@ -53,7 +53,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <Calendar className="h-4 w-4" />
                   <span>Next Exam</span>
                 </div>
-                <CardTitle className="text-3xl md:text-4xl font-bold">
+                <CardTitle className="text-3xl md:text-4xl font-bold pb-6">
                     {exam.name}
                 </CardTitle>
               </div>
@@ -61,7 +61,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <Pen className="h-5 w-5" />
               </Button>
             </div>
-             <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 mt-4 text-base text-primary-foreground/90 font-medium">
+             <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 text-base text-primary-foreground/90 font-medium">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
                   <span className="text-lg sm:text-xl font-bold">
