@@ -59,8 +59,10 @@ function ExamItemComponent({ exam }: ExamItemProps) {
   return (
     <>
       <Card className={cn(
-          "shadow-sm hover:shadow-md transition-shadow flex flex-col",
-          exam.isCompleted ? "bg-green-50 border-green-200" : "bg-card"
+          "flex flex-col transition-all duration-300",
+          exam.isCompleted 
+            ? "bg-green-50 border-2 border-green-200 shadow-md" 
+            : "bg-card border-2 border-primary/20 shadow-lg shadow-primary/5 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1"
       )}>
         <CardHeader className="pb-4">
           <div className="flex justify-between items-start">
@@ -81,7 +83,7 @@ function ExamItemComponent({ exam }: ExamItemProps) {
           <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex flex-wrap gap-1">
               {examDetails.map((detail, index) => detail && (
-                <Badge key={index} variant={exam.isCompleted ? 'default' : 'secondary'} className={cn('px-2.5 py-1 text-sm border-2 border-primary', exam.isCompleted ? 'bg-green-100 text-green-800' : '')}>
+                <Badge key={index} variant={exam.isCompleted ? 'default' : 'secondary'} className={cn('px-2.5 py-1 text-sm border-2 border-primary', exam.isCompleted ? 'bg-green-100 text-green-800 border-green-300' : '')}>
                   {detail.subjectName} - {detail.chapterName}
                 </Badge>
               ))}
