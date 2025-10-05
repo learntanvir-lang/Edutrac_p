@@ -43,7 +43,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
     <>
       <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl">
         <CardHeader className="pb-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div className="flex flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
                     <Calendar className="h-4 w-4" />
