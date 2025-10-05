@@ -88,7 +88,7 @@ function ExamItemComponent({ exam }: ExamItemProps) {
                 </Badge>
               ))}
             </div>
-            <p className="flex items-center gap-2 pt-2">
+            <p className="flex items-center gap-2 pt-2 text-primary font-semibold text-base">
               <Calendar className="h-4 w-4" /> {format(new Date(exam.date), "d MMMM, yyyy, p")}
             </p>
           </div>
