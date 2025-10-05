@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChangePasswordDialog } from './auth/ChangePasswordDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ThemeToggle } from './ThemeToggle';
 
 export function AppHeader() {
   const { user } = useUser();
@@ -45,8 +44,6 @@ export function AppHeader() {
             <span className="font-bold text-lg">EduTrack</span>
           </Link>
           
-          <ThemeToggle />
-
           {user && (
             <div className="flex items-center gap-2 sm:gap-4 ml-4">
               <span className="text-sm font-bold text-primary hidden sm:inline-flex items-center gap-2">
