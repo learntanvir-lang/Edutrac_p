@@ -70,7 +70,7 @@ export default function RootLayout({
               <div className="relative flex min-h-screen flex-col">
                 <AppHeader />
                 <main className="flex-1">{children}</main>
-                <footer className="w-full border-t border-border bg-background py-4">
+                <footer className="w-full border-t border-border bg-background py-4 px-4 md:px-6">
                   <div className="container text-center text-sm text-muted-foreground">
                     All Right Reserved By{' '}
                     <span className="font-semibold text-primary">

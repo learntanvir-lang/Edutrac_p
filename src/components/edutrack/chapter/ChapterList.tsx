@@ -56,7 +56,7 @@ export function ChapterList({ chapters, subjectId, paperId }: ChapterListProps) 
 
   if (chapters.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-card p-12 text-center shadow-sm">
+      <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-card p-8 md:p-12 text-center shadow-sm">
         <h3 className="text-lg font-semibold text-muted-foreground">No Chapters Yet</h3>
         <p className="mt-1 text-sm text-muted-foreground">Add a chapter to get started.</p>
       </div>
