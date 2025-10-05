@@ -3,9 +3,10 @@
   "short_name": "EduTrack",
   "description": "A modern way to track your exams, subjects, and study progress.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1E40AF",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/icons/icon.svg",
