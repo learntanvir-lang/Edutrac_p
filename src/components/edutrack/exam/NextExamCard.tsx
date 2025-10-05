@@ -62,7 +62,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
               </Button>
             </div>
         </CardHeader>
-        <CardContent className="space-y-4 md:space-y-2">
+        <CardContent className="space-y-4 md:space-y-2 pt-0">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80">
                   <Info className="h-4 w-4" />
