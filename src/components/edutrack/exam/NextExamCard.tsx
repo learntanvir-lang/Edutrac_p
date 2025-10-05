@@ -39,6 +39,10 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
       return null;
     }).filter(Boolean);
 
+    const examDate = new Date(exam.date);
+    const formattedDate = format(examDate, "PPPP");
+    const formattedTime = format(examDate, "p");
+
   return (
     <>
       <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl overflow-hidden">
@@ -52,10 +56,36 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <CardTitle className="text-3xl md:text-4xl font-bold">
                     {exam.name}
                   </CardTitle>
-                  <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
-                      <span className="flex items-center gap-2"><Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPP")}</span></span>
-                      <span className="flex items-center gap-2"><Clock className="h-5 w-5" /> <span>{format(new Date(exam.date), "p")}</span></span>
-                  </CardDescription>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5" />
+                        <span className="text-xl font-bold">
+                           {formattedDate.split('').map((char, index) => (
+                                <span
+                                key={index}
+                                className="inline-block animate-wave"
+                                style={{ animationDelay: `${index * 0.05}s` }}
+                                >
+                                {char === " " ? "\u00A0" : char}
+                                </span>
+                            ))}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-5 w-5" />
+                         <span className="text-xl font-bold">
+                           {formattedTime.split('').map((char, index) => (
+                                <span
+                                key={index}
+                                className="inline-block animate-wave"
+                                style={{ animationDelay: `${(formattedDate.length + index) * 0.05}s` }}
+                                >
+                                {char === " " ? "\u00A0" : char}
+                                </span>
+                            ))}
+                        </span>
+                      </div>
+                  </div>
               </div>
               <Button variant="outline" size="icon" onClick={() => setIsEditDialogOpen(true)} className="w-10 h-10 flex-shrink-0 rounded-full bg-transparent border-2 border-primary-foreground/50 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground self-start">
                   <Pen className="h-5 w-5" />
