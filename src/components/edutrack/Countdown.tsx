@@ -29,7 +29,7 @@ const calculateTimeLeft = (targetDate: string): TimeLeft | null => {
 };
 
 const CountdownBox = ({ value, label }: { value: string; label: string }) => (
-    <div className="bg-background/20 dark:bg-background/50 rounded-lg p-3 text-center w-full">
+    <div className="bg-background/20 dark:bg-background/50 rounded-lg p-3 text-center w-full transition-transform duration-300 ease-in-out hover:scale-105">
         <div className="text-2xl font-bold text-card-foreground">{value}</div>
         <div className="text-xs text-muted-foreground uppercase tracking-widest">{label}</div>
     </div>

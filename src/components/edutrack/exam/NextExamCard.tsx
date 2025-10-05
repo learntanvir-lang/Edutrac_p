@@ -41,8 +41,8 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
 
   return (
     <>
-      <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)]">
-        <CardHeader className="pb-2">
+      <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl">
+        <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
@@ -70,7 +70,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
               </div>
               <div className="flex flex-wrap gap-2">
                 {examDetails.map((detail, index) => detail && (
-                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105">
+                  <Badge key={index} variant="secondary" className="px-3 py-1 text-sm md:text-base bg-primary-foreground/20 text-primary-foreground transition-all hover:bg-primary-foreground/30 hover:scale-105 animate-pulse">
                     {detail.subjectName} - {detail.chapterName}
                   </Badge>
                 ))}
