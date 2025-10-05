@@ -83,7 +83,7 @@ export function SubjectList() {
       <Accordion type="multiple" className="w-full space-y-4">
         {subjects.map(subject => (
           <AccordionItem key={subject.id} value={subject.id} className="border-none">
-            <Card className="shadow-sm">
+            <Card className="shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between p-3 md:p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
