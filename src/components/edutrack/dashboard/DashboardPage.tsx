@@ -21,7 +21,7 @@ const SubjectDialog = dynamic(() => import('@/components/edutrack/subject/Subjec
 type View = 'subjects' | 'exams' | null;
 
 export default function DashboardPage() {
-  const [activeView, setActiveView] = useState<View>('subjects');
+  const [activeView, setActiveView] = useState<View>(null);
   const [isSubjectDialogOpen, setIsSubjectDialogOpen] = useState(false);
   const { exams, subjects } = useContext(AppDataContext);
 
