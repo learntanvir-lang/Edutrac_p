@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChangePasswordDialog } from './auth/ChangePasswordDialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ThemeToggle } from './ThemeToggle';
 
 export function AppHeader() {
   const { user } = useUser();
@@ -46,7 +45,6 @@ export function AppHeader() {
           </Link>
           
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             {user && (
               <div className="flex items-center gap-2 sm:gap-4 ml-2">
                 <span className="text-base font-bold text-primary hidden sm:inline-flex items-center gap-2">

@@ -6,7 +6,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { AppHeader } from '@/components/edutrack/AppHeader';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { ThemeProvider } from "@/components/edutrack/ThemeProvider";
 
 
 const APP_NAME = "EduTrack";
@@ -66,12 +65,6 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
           <FirebaseClientProvider>
             <AppDataProvider>
               <div className="relative flex min-h-screen flex-col">
@@ -89,7 +82,6 @@ export default function RootLayout({
               <Toaster />
             </AppDataProvider>
           </FirebaseClientProvider>
-        </ThemeProvider>
       </body>
     </html>
   );
