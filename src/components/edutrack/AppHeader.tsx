@@ -47,10 +47,9 @@ export function AppHeader() {
           <div className="flex items-center gap-2">
             {user && (
               <div className="flex items-center gap-2 sm:gap-4 ml-2">
-                <span className="text-base font-bold text-primary hidden sm:inline-flex items-center gap-2">
+                <span className="text-[1.3rem] font-bold text-primary hidden sm:inline-flex items-center gap-2">
                   <Sparkles className="h-5 w-5 animate-pulse" />
                   Hello, {user.displayName || 'User'}
-                  <Sparkles className="h-5 w-5 animate-pulse" />
                 </span>
 
                 <DropdownMenu>
