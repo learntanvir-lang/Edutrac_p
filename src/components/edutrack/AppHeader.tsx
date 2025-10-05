@@ -50,6 +50,7 @@ export function AppHeader() {
                 <span className="text-[1.3rem] font-bold text-primary hidden sm:inline-flex items-center gap-2">
                   <Sparkles className="h-5 w-5 animate-pulse" />
                   Hello, {user.displayName || 'User'}
+                  <Sparkles className="h-5 w-5 animate-pulse" />
                 </span>
 
                 <DropdownMenu>
