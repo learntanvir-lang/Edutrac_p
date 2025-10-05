@@ -47,33 +47,33 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
     <>
       <Card className="bg-primary text-primary-foreground border-0 shadow-xl rounded-2xl [--card-foreground:theme(colors.primary.foreground)] [--muted-foreground:theme(colors.primary.foreground/0.8)] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-2xl overflow-hidden">
         <CardHeader>
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-              <div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>Next Exam</span>
-                  </div>
-                  <CardTitle className="text-3xl md:text-4xl font-bold">
-                    {exam.name}
-                  </CardTitle>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        <span className="text-xl font-bold">
-                           {formattedDate}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-5 w-5" />
-                         <span className="text-xl font-bold">
-                           {formattedTime}
-                        </span>
-                      </div>
-                  </div>
+            <div className="flex justify-between items-start gap-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground/80 mb-2">
+                <Calendar className="h-4 w-4" />
+                <span>Next Exam</span>
               </div>
               <Button variant="outline" size="icon" onClick={() => setIsEditDialogOpen(true)} className="w-10 h-10 flex-shrink-0 rounded-full bg-transparent border-2 border-primary-foreground/50 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
                   <Pen className="h-5 w-5" />
               </Button>
+            </div>
+             <div>
+                <CardTitle className="text-3xl md:text-4xl font-bold">
+                  {exam.name}
+                </CardTitle>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-base text-primary-foreground/90 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      <span className="text-xl font-bold">
+                         {formattedDate}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5" />
+                       <span className="text-xl font-bold">
+                         {formattedTime}
+                      </span>
+                    </div>
+                </div>
             </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -108,3 +108,4 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
     </>
   );
 }
+
