@@ -62,7 +62,7 @@ function ExamItemComponent({ exam }: ExamItemProps) {
           "flex flex-col transition-all duration-300",
           exam.isCompleted 
             ? "bg-green-50 border-2 border-green-200 shadow-md" 
-            : "bg-card border-2 border-primary/20 shadow-lg shadow-primary/5 hover:border-primary hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1"
+            : "bg-card border-2 border-primary shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1"
       )}>
         <CardHeader className="pb-4">
           <div className="flex justify-between items-start">
