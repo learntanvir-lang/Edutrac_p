@@ -81,7 +81,7 @@ function ExamItemComponent({ exam }: ExamItemProps) {
           <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex flex-wrap gap-1">
               {examDetails.map((detail, index) => detail && (
-                <Badge key={index} variant={exam.isCompleted ? 'default' : 'secondary'} className={cn('px-2 py-1 text-xs border border-primary', exam.isCompleted ? 'bg-green-100 text-green-800' : '')}>
+                <Badge key={index} variant={exam.isCompleted ? 'default' : 'secondary'} className={cn('px-2.5 py-1 text-sm border-2 border-primary', exam.isCompleted ? 'bg-green-100 text-green-800' : '')}>
                   {detail.subjectName} - {detail.chapterName}
                 </Badge>
               ))}
