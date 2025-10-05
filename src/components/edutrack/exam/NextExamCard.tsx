@@ -52,7 +52,7 @@ export default function NextExamCard({ exam }: NextExamCardProps) {
                   <CardTitle className="text-3xl md:text-4xl font-bold">
                     {exam.name}
                   </CardTitle>
-                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 text-primary-foreground/90 text-lg font-semibold">
+                  <CardDescription className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-6 text-primary-foreground/90 text-lg font-semibold">
                       <Calendar className="h-5 w-5" /> <span>{format(new Date(exam.date), "PPPPp")}</span>
                   </CardDescription>
               </div>
