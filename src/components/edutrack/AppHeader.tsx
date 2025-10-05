@@ -44,8 +44,8 @@ export function AppHeader() {
             <span className="font-bold text-lg">EduTrack</span>
           </Link>
           {user && (
-            <div className="flex items-center gap-4">
-              <span className="text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-sm sm:text-lg font-bold text-primary hidden sm:inline-flex items-center gap-2">
                 <Sparkles className="h-5 w-5 animate-pulse" />
                 Hello, {user.displayName || 'User'}
                 <Sparkles className="h-5 w-5 animate-pulse delay-500" />
