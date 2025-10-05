@@ -64,7 +64,7 @@ function ExamItemComponent({ exam }: ExamItemProps) {
             ? "bg-green-50 border-2 border-green-200 shadow-md" 
             : "bg-card border-2 border-primary shadow-lg shadow-primary/10 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
       )}>
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="font-bold text-xl">
               {exam.name}
