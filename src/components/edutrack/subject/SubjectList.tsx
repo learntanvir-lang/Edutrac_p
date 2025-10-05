@@ -83,18 +83,18 @@ export function SubjectList() {
       <Accordion type="multiple" className="w-full space-y-4">
         {subjects.map(subject => (
           <AccordionItem key={subject.id} value={subject.id} className="border-none">
-            <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <Card className="shadow-sm hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between p-3 md:p-4">
                 <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                    <div className="flex items-center gap-4">
-                     <CardTitle className="flex items-center text-base sm:text-lg md:text-xl">
+                     <CardTitle className="flex items-center text-lg md:text-xl">
                        {subject.name}
                        <SubjectProgressBadge subject={subject} />
                       </CardTitle>
                      <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                    </div>
                 </AccordionTrigger>
-                <div className="flex items-center">
+                <div className="flex items-center ml-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8">

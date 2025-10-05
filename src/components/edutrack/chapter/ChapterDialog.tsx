@@ -210,7 +210,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                                     control={form.control}
                                     name={`progressItems.${index}.name`}
                                     render={({ field }) => (
-                                        <FormItem className="col-span-2">
+                                        <FormItem className="col-span-full sm:col-span-2">
                                             <FormLabel className="sr-only">Tracker Name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Tracker Name" {...field} />
@@ -226,7 +226,7 @@ export function ChapterDialog({ open, onOpenChange, subjectId, paperId, chapter 
                                         <FormItem>
                                             <FormLabel className="sr-only">Completed</FormLabel>
                                             <FormControl>
-                                                <Input type="number" placeholder="Completed" {...field} />
+                                                <Input type="number" placeholder="Done" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

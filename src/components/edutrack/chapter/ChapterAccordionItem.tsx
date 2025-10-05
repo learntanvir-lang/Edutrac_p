@@ -65,8 +65,8 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                         <AccordionTrigger className="p-0 hover:no-underline flex-1 group">
                             <div className="flex items-center gap-3">
                                 <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab shrink-0" />
-                                <span className="font-bold text-base sm:text-lg text-primary text-left">
-                                    {chapter.number ? `Chapter-${chapter.number}:${chapter.name}`: chapter.name}
+                                <span className="font-bold text-base text-primary text-left">
+                                    {chapter.number ? `Ch-${chapter.number}: ${chapter.name}`: chapter.name}
                                 </span>
                                 <Badge variant={overallProgress === 100 ? "default" : "secondary"} className={cn("ml-auto sm:ml-2", overallProgress === 100 && "bg-green-600")}>
                                     {overallProgress}%
@@ -74,7 +74,7 @@ function ChapterAccordionItemComponent({ chapter, subjectId, paperId }: ChapterA
                                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 shrink-0" />
                             </div>
                         </AccordionTrigger>
-                        <div className="flex items-center gap-1 ml-2 sm:ml-4">
+                        <div className="flex items-center gap-1 ml-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" className="h-8 w-8">

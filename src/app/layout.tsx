@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { AppDataProvider } from '@/context/AppDataContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -5,6 +6,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { AppHeader } from '@/components/edutrack/AppHeader';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { ThemeProvider } from '@/components/edutrack/ThemeProvider';
+
 
 const APP_NAME = "EduTrack";
 const APP_DEFAULT_TITLE = "EduTrack - Student Exam & Syllabus Tracker";
@@ -63,23 +66,30 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
-        <FirebaseClientProvider>
-          <AppDataProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <AppHeader />
-              <main className="flex-1">{children}</main>
-              <footer className="w-full border-t border-border bg-background py-4">
-                <div className="container text-center text-sm text-muted-foreground">
-                  All Right Reserved By{' '}
-                  <span className="font-semibold text-primary">
-                    TANVIR MAHMUD
-                  </span>
-                </div>
-              </footer>
-            </div>
-            <Toaster />
-          </AppDataProvider>
-        </FirebaseClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <FirebaseClientProvider>
+            <AppDataProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <AppHeader />
+                <main className="flex-1">{children}</main>
+                <footer className="w-full border-t border-border bg-background py-4">
+                  <div className="container text-center text-sm text-muted-foreground">
+                    All Right Reserved By{' '}
+                    <span className="font-semibold text-primary">
+                      TANVIR MAHMUD
+                    </span>
+                  </div>
+                </footer>
+              </div>
+              <Toaster />
+            </AppDataProvider>
+          </FirebaseClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

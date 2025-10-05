@@ -94,7 +94,7 @@ export function PaperList({ papers, subjectId }: PaperListProps) {
                      <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                    </div>
                 </AccordionTrigger>
-                <div className="flex items-center">
+                <div className="flex items-center ml-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8">
