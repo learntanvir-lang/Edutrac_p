@@ -71,18 +71,22 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   const [isPersistenceEnabled, setIsPersistenceEnabled] = useState(false);
 
   useEffect(() => {
+    // Attempt to enable persistence.
     enableIndexedDbPersistence(firestore)
       .then(() => {
         setIsPersistenceEnabled(true);
       })
       .catch((err) => {
-        if (err.code == 'failed-precondition') {
-          console.warn('Firestore persistence failed: multiple tabs open.');
-        } else if (err.code == 'unimplemented') {
-          console.warn('Firestore persistence not available in this browser.');
+        // This can happen if another tab has persistence enabled.
+        // It's not a critical error, the app will still function
+        // but without offline support in this tab.
+        if (err.code === 'failed-precondition') {
+          console.warn("Firestore persistence failed: another tab may be open. Offline mode will be disabled for this tab.");
+        } else if (err.code === 'unimplemented') {
+          console.warn("Firestore persistence not supported in this browser. Offline mode disabled.");
         }
-        // In any case, we can proceed with the app.
-        // Offline capability will just be disabled.
+         // We still mark persistence as 'enabled' (or rather, 'checked')
+         // to allow the app to proceed. The SDK will handle being in a non-persistent state.
         setIsPersistenceEnabled(true);
       });
   }, [firestore]);
